@@ -1,0 +1,28 @@
+[MASTER]
+disable=
+ C0114, # missing-module-docstring
+ C0115, # missing-class-docstring 
+ C0116, # missing-function-docstring
+ 
+
+recursive = true
+fail-under=9.9
+
+[tool.pylint.format]
+expected-line-ending-format = 
+ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
+indent-after-paren = 4
+indent-string = "    "
+max-line-length = 130
+max-module-lines = 1000
+single-line-class-stmt = false
+single-line-if-stmt = false
+
+
+[tool.pylint.main]
+jobs = 1
+limit-inference-results = 100
+persistent = true
+reports = false
+score = true
+suggestion-mode = true
