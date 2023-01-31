@@ -3,7 +3,7 @@ requires = ["setuptools >= 40.9.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "redmine_statistics"
+name = "project_management_statistics"
 version = "0.01"
 
 [tool.setuptools]
