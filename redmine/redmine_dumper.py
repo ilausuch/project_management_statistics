@@ -27,7 +27,13 @@ class RedmineDumper:
         self.session = Session()
         self.issue_query = self.session.query(Issue)
 
-    def dump_to_db(self) -> None:
+    def dump_to_db(self, query_id) -> None:
         self.logger.info("Dump data into local DB")
-        issues = self.redmine.issue.all(sort='category:desc')
+        if query_id:
+            self.logger.info(f"using query ID={query_id} to filter entities")
+            issues = self.redmine.issue.all().filter(query_id=query_id)
+        else:
+            self.logger.warning(
+                "Because query id was not specified we will limit fetched entitied to 100")
+            issues = self.redmine.issue.all(limit=100)
         self.logger.info(len(issues))
