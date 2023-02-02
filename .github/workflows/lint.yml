@@ -17,9 +17,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements_test.txt
+        touch redmine/config.py
     - name: Analysing the code with pylint
       run: |
-        pylint ./db/
+        pylint ./db/ ./redmine ./dumper.py
   flake8-lint:
     runs-on: ubuntu-latest
     name: flake8

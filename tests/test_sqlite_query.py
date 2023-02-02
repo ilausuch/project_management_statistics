@@ -1,19 +1,7 @@
 from datetime import datetime
 from db.models import Issue, IssueState
+from redmine.redmine_dumper import RedmineStatus
 from metrics.sqlite_query import SQLiteQuery
-
-
-# Open
-NEW = 1
-WORKABLE = 12
-IN_PROGRESS = 2
-BLOCKED = 15
-FEEDBACK = 4
-
-# Closed
-RESOLVED = 3
-CLOSED = 5
-REJECTED = 6
 
 
 def test_status_snapshot():
@@ -25,13 +13,13 @@ def test_status_snapshot():
     date_move_on_resolved = datetime(2023, 2, 1)
 
     session.add(
-        Issue(
-            issue_id=1,
-            project_id=1,
-            type_id=1,
-            status_id=RESOLVED,
-            created_on=date_on_new,
-            closed_on=date_move_on_resolved,
+        Issue({
+            'issue_id': 1,
+            'project_id': 1,
+            'type_id': 1,
+            'status_id': RedmineStatus.RESOLVED,
+            'created_on': date_on_new,
+            'closed_on': date_move_on_resolved}
         )
     )
     session.add(
@@ -39,7 +27,7 @@ def test_status_snapshot():
             issue_id=1,
             field="status",
             created_on=date_on_new,
-            new_value=NEW
+            new_value=RedmineStatus.NEW
         )
     )
     session.add(
@@ -47,8 +35,8 @@ def test_status_snapshot():
             issue_id=1,
             field="status",
             created_on=date_move_on_in_progress,
-            old_value=WORKABLE,
-            new_value=IN_PROGRESS
+            old_value=RedmineStatus.NEW,
+            new_value=RedmineStatus.IN_PROGRESS
         )
     )
     session.add(
@@ -56,8 +44,8 @@ def test_status_snapshot():
             issue_id=1,
             field="status",
             created_on=date_move_on_resolved,
-            old_value=IN_PROGRESS,
-            new_value=RESOLVED
+            old_value=RedmineStatus.IN_PROGRESS,
+            new_value=RedmineStatus.RESOLVED
         )
     )
     session.commit()
@@ -65,23 +53,23 @@ def test_status_snapshot():
     # Get the current state for the issue (should be one)
     result = query.issues(project_id=1)
     assert len(result) == 1
-    assert result[0]["status_id"] == RESOLVED
+    assert result[0]["status_id"] == RedmineStatus.RESOLVED
 
     result = query.status_snapshot(date=date_on_new, project_id=1)
     assert len(result) == 1
-    assert result[0]["status_id"] == NEW
+    assert result[0]["status_id"] == RedmineStatus.NEW
 
     result = query.status_snapshot(date=date_move_on_in_progress, project_id=1)
     assert len(result) == 1
-    assert result[0]["status_id"] == IN_PROGRESS
+    assert result[0]["status_id"] == RedmineStatus.IN_PROGRESS
 
     result = query.status_snapshot(date=date_move_on_resolved, project_id=1)
     assert len(result) == 1
-    assert result[0]["status_id"] == RESOLVED
+    assert result[0]["status_id"] == RedmineStatus.RESOLVED
 
     result = query.status_snapshot(date=datetime(2024, 1, 1), project_id=1)
     assert len(result) == 1
-    assert result[0]["status_id"] == RESOLVED
+    assert result[0]["status_id"] == RedmineStatus.RESOLVED
 
     # The date before the issue is created
     result = query.status_snapshot(date=datetime(2022, 1, 1), project_id=1)
@@ -103,51 +91,52 @@ def test_issues_active_in_period():
     date_after_period_out_1 = datetime(2023, 7, 1)
     date_after_period_out_2 = datetime(2023, 8, 1)
 
-    session.add(Issue(
-        issue_id=1,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_before_period_in_1,
-        closed_on=date_before_period_in_2
+    session.add(Issue({
+        'issue_id': 1,
+        'project_id': 1,
+        'status_id': RedmineStatus.RESOLVED.value,
+        'created_on': date_before_period_in_1,
+        'closed_on': date_before_period_in_2
+    }))
+    session.add(Issue({
+        'issue_id': 2,
+        'project_id': 1,
+        'status_id': RedmineStatus.RESOLVED,
+        'created_on': date_before_period_in_1,
+        'closed_on': date_period_1
+    }))
+    session.add(Issue({
+        'issue_id': 3,
+        'project_id': 1,
+        'status_id': RedmineStatus.RESOLVED,
+        'created_on': date_before_period_in_1,
+        'closed_on': date_after_period_out_1}
     ))
     session.add(Issue(
-        issue_id=2,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_before_period_in_1,
-        closed_on=date_period_1
+        {'issue_id': 4,
+         'project_id': 1,
+         'status_id': RedmineStatus.RESOLVED,
+         'created_on': date_period_1,
+         'closed_on': date_period_2}
     ))
     session.add(Issue(
-        issue_id=3,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_before_period_in_1,
-        closed_on=date_after_period_out_1
+        {'issue_id': 5,
+         'project_id': 1,
+         'status_id': RedmineStatus.RESOLVED,
+         'created_on': date_period_2,
+         'closed_on': date_after_period_out_1}
     ))
     session.add(Issue(
-        issue_id=4,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_period_1,
-        closed_on=date_period_2
-    ))
-    session.add(Issue(
-        issue_id=5,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_period_2,
-        closed_on=date_after_period_out_1
-    ))
-    session.add(Issue(
-        issue_id=6,
-        project_id=1,
-        status_id=RESOLVED,
-        created_on=date_after_period_out_1,
-        closed_on=date_after_period_out_2
+        {'issue_id': 6,
+         'project_id': 1,
+         'status_id': RedmineStatus.RESOLVED,
+         'created_on': date_after_period_out_1,
+         'closed_on': date_after_period_out_2}
     ))
     session.commit()
 
-    result = query.issues_active_in_period(date_in=date_period_in, date_out=date_period_out, project_id=1)
+    result = query.issues_active_in_period(
+        date_in=date_period_in, date_out=date_period_out, project_id=1)
     print(result)
     assert len(result) == 4
 

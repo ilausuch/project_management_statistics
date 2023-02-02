@@ -17,7 +17,8 @@ class SQLiteQuery:
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         engine = create_engine(f"sqlite:///{database}")
-        Base.metadata.create_all(engine, Base.metadata.tables.values(), checkfirst=True)
+        Base.metadata.create_all(
+            engine, Base.metadata.tables.values(), checkfirst=True)
         session_maker = sessionmaker(bind=engine)
         self.session = session_maker()
 
@@ -37,11 +38,14 @@ class SQLiteQuery:
         :param filter: A dict of filters e.g. project_id=1
         :return: A list of issues
         """
-        issues_to_date = self.session.query(Issue).filter_by(**filter).filter(Issue.created_on <= date).all()
+        issues_to_date = self.session.query(Issue).filter_by(
+            **filter).filter(Issue.created_on <= date).all()
         issues_dict = [issue.__dict__ for issue in issues_to_date]
         for issue in issues_dict:
-            state = self.session.query(IssueState).filter(IssueState.issue_id == issue["issue_id"], IssueState.field == "status")
-            state = state.filter(IssueState.created_on <= date).order_by(IssueState.created_on.desc()).first()
+            state = self.session.query(IssueState).filter(
+                IssueState.issue_id == issue["issue_id"], IssueState.field == "status")
+            state = state.filter(IssueState.created_on <= date).order_by(
+                IssueState.created_on.desc()).first()
             if state is not None:
                 issue["status_id"] = int(state.new_value)
 
@@ -55,6 +59,8 @@ class SQLiteQuery:
         :param filter: A dict of filters e.g. project_id=1
         :return: A list of issues
         """
-        query = self.session.query(Issue).filter_by(**filter).filter(Issue.created_on < date_out)
-        issues_in_period = query.filter(or_(Issue.closed_on is None, Issue.closed_on > date_in)).all()
+        query = self.session.query(Issue).filter_by(
+            **filter).filter(Issue.created_on < date_out)
+        issues_in_period = query.filter(
+            or_(Issue.closed_on is None, Issue.closed_on > date_in)).all()
         return [issue.__dict__ for issue in issues_in_period]
