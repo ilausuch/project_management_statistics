@@ -42,7 +42,8 @@ class SQLiteQuery:
         for issue in issues_dict:
             state = self.session.query(IssueState).filter(IssueState.issue_id == issue["issue_id"], IssueState.field == "status")
             state = state.filter(IssueState.created_on <= date).order_by(IssueState.created_on.desc()).first()
-            issue["status_id"] = int(state.new_value)
+            if state is not None:
+                issue["status_id"] = int(state.new_value)
 
         return issues_dict
 
