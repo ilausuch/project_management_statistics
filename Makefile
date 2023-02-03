@@ -10,13 +10,7 @@ prepare:
 
 .PHONY: test
 test:
-	flake8 ./db/
-	pylint ./db/
-	pytest --cov
-
-.PHONY: codecov
-codecov:
-	pytest -v --cov --cov-report=html && xdg-open htmlcov/index.html
+	python3 -m pytest tests/
 
 # Build containers
 docker-container:
