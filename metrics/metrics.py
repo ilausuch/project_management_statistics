@@ -19,18 +19,18 @@ class Metrics:
 
         return status_counters
 
-    def status_count(self, **filter):
+    def status_count(self, **filters):
         """
         Classify the issues by status and return the ammount in each category
         :param filter: A dict of filters e.g. project_id=1
         :return: A dict with the format <status_id:count>
         """
-        return self._status_count(self.query_manager.issues(**filter))
+        return self._status_count(self.query_manager.issues(**filters))
 
-    def status_count_by_date(self, date, **filter):
+    def status_count_by_date(self, date, **filters):
         """
         Classify the issues by status and return the ammount in each category
         :param filter: A dict of filters e.g. project_id=1
         :return: A dict with the format <status_id:count>
         """
-        return self._status_count(self.query_manager.status_snapshot(date, **filter))
+        return self._status_count(self.query_manager.status_snapshot(date, **filters))

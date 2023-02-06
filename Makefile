@@ -10,7 +10,8 @@ prepare:
 
 .PHONY: test
 test:
-	python3 -m pytest tests/
+	touch ./redmine/config.py
+	python3 -m pytest
 
 # Build containers
 docker-container:
