@@ -1,10 +1,25 @@
 import sys
+from enum import Enum
 from redminelib import Redmine
 import redmine.config as config
 from db.models import Base, Issue
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+
+class RedmineStatus(Enum):
+    NEW = 1
+    WORKABLE = 12
+    IN_PROGRESS = 2
+    BLOCKED = 15
+    FEEDBACK = 4
+
+    # Closed
+    RESOLVED = 3
+    CLOSED = 5
+    REJECTED = 6
+    UNKNOWN = 0
 
 
 class RedmineDumper:

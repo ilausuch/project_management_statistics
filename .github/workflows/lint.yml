@@ -19,7 +19,8 @@ jobs:
         pip install -r requirements_test.txt
     - name: Analysing the code with pylint
       run: |
-        pylint ./db/
+        PYTHONPATH=. pylint ./db/ ./metrics/
+        PYTHONPATH=. pylint ./tests/
   flake8-lint:
     runs-on: ubuntu-latest
     name: flake8
