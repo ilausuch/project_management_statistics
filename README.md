@@ -15,6 +15,100 @@
 podman run  -ti --rm -v <your_code_path>:/pms  pms_test "./dumper.py --queryid <query_id>"
 ```
 
+## Querying
+
+Import SQLiteQuery
+
+```
+from metrics.sqlite_query import SQLiteQuery
+```
+
+Create the object
+
+```
+query = SQLiteQuery(<file>)
+```
+
+### Methods
+
+
+#### query.issues(**filters)
+Get all issues
+params:
+* filter: A dict of filters e.g. project_id=1
+return: A list of issues
+
+#### query.status_snapshot(date, **filters)
+Get all the active and resolved issues with the status in a especific moment
+params:
+* date (datetime): The date for the snapshot. None means the last values
+* *filter: A dict of filters e.g. project_id=1
+return: A list of issues
+
+e.g.
+
+```
+result = query.status_snapshot(date=datetime(2023, 1, 1), project_id=1)
+```
+
+#### query.issues_active_in_period(date_in, date_out, **filters)
+Get all the issues that are active (not closed) during a period of time
+params:
+* date_in (datetime): The begining of the period
+* date_out (datetime): The end of the period
+* filter: A dict of filters e.g. project_id=1
+return: A list of issues
+
+
+## Metrics
+
+Import Metrics and SQLiteQuery if is necessary
+```
+from metrics.metrics import Metrics
+from metrics.sqlite_query import SQLiteQuery
+```
+
+Create the objects
+```
+query = SQLiteQuery(<file>)
+metrics = Metrics(query)
+```
+
+### Methods
+
+#### metrics.status_count(**filters)
+Classify the issues by status and return the ammount in each category
+params:
+* filter: A dict of filters e.g. project_id=1
+
+return: A dict with the format <status_id:count>
+
+### status_count_by_date(date, **filters)
+Classify the issues by status and return the ammount in each category
+params:
+* filter: A dict of filters e.g. project_id=1
+
+return: A dict with the format <status_id:count>
+
+
+## Formater
+
+```
+from metrics.influxdb_formater import MetricsInfluxdbFormater
+```
+
+### Methods
+
+#### format_dict(measurement_name, values, date, **filters)
+Format a dictionary with the format key:value
+params:
+* measurement_name: Messurement name for the influx db
+* values: the dictionary with the format <status_id:count>
+* date: the date of the measurement
+* filter: the filters used to obtain this messurement
+return: A formated string
+
+
 ## Containers
 
 ### Create the containers
