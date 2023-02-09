@@ -1,5 +1,20 @@
 # project_management_statistics
 
+## Structure
+
+```mermaid
+graph TD
+    A(fa:fa-cloud Progress) -->|Issues| B[fa:fa-gear Progress Mirroring]
+    C(fa:fa-cloud Bugzilla) -->|Issues| D[fa:fa-gear Bugzilla Mirroring]
+    B -->|std Issues| E(fa:fa-database Database)
+    D -->|std Issues| E
+    E -->|std Issues| F[fa:fa-gear Querying]
+    F -->|std Issues| G[fa:fa-gear Metrics]
+    G -->|statistics| H[fa:fa-gear Formating]
+    H -->|influx db line format| I(fa:fa-database Influxdb)
+    I --> J(fa:fa-chart-pie Grafana)
+```
+
 ## Usage
 
 ### Dumping progress issues into local DB for further processing
