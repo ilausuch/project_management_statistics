@@ -4,7 +4,7 @@
 
 ### Dumping progress issues into local DB for further processing
 
-1. under [/redmine](/redmine/) folder create `config.py`
+1. Create the a redmine config file as a python file. e.g. `config.py`
 2. define following variables in this file:
     - PROGRESS_URL - URL to target Redmine from where tickets will be dumped
     - PROGRESS_KEY - API key allowing to access PROGRESS_URL
@@ -12,7 +12,7 @@
 3. execute :
 
 ```bash
-podman run  -ti --rm -v <your_code_path>:/pms  pms_test "./dumper.py --queryid <query_id>"
+podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py --project <project_name>"
 ```
 
 ## Querying
