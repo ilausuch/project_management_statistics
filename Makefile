@@ -10,7 +10,7 @@ prepare:
 
 .PHONY: test
 test:
-	touch ./redmine/config.py
+	cp ./redmine/config_example.py ./redmine/config.py
 	python3 -m pytest
 
 # Build containers

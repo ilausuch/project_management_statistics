@@ -9,12 +9,12 @@ def main():
     parser.add_argument(
         '--source', help="Source from where ticket will be dumped. Possible values: (redmine|bugzilla). \
             Default: redmine", default='redmine')
-    parser.add_argument(
-        '--queryid', help="Pass progress specific query ID to filter entities")
+    parser.add_argument('--project', help="Project name", required=True)
+
     args = parser.parse_args()
     if args.source == "redmine":
         dumper = RedmineDumper()
-        dumper.dump_to_db(args.queryid)
+        dumper.dump_to_db(args.project)
     else:
         raise NotImplementedError(f"'--source {args.source}' not supported")
 

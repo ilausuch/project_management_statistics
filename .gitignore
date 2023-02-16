@@ -3,3 +3,4 @@ venv
 __pycache__
 redmine/config.py
 redmine_cache.sql
+notes.txt
