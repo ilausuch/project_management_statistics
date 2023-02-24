@@ -105,15 +105,15 @@ class RedmineDumper:
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-        self.logger.info("Init connection to %s", config.PROGRESS_URL)
-        engine = create_engine(f"sqlite:///{config.REDMINE_DB}")
+        self.logger.info("Init connection to %s", config.REDMINE_URL)
+        engine = create_engine(f"sqlite:///{config.MIRROR_SQLITE_DB}")
         Base.metadata.create_all(
             engine, Base.metadata.tables.values(), checkfirst=True)
         session_maker = sessionmaker(bind=engine)
         self.session = session_maker()
 
     def raw_query(self, url_ending: str, filters: Dict[str, list] = {}) -> Any:
-        query = f"{config.PROGRESS_URL}{url_ending}?utf8=✓"
+        query = f"{config.REDMINE_URL}{url_ending}?utf8=✓"
         if len(filters) > 0:
             query = f"{query}&set_filter=1"
             for filter_key in filters:
@@ -122,7 +122,7 @@ class RedmineDumper:
                 query = f"{query}&{filter_str}"
         self.logger.debug("Resulting request %s", query)
         response = requests.get(query, headers={
-            'X-Redmine-API-Key': config.PROGRESS_KEY}, timeout=60)
+            'X-Redmine-API-Key': config.REDMINE_KEY}, timeout=60)
         response.raise_for_status()
         response_json = response.json()
         return response_json

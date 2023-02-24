@@ -21,9 +21,9 @@ graph TD
 
 1. Create the a redmine config file as a python file. e.g. `config.py`
 2. define following variables in this file:
-    - PROGRESS_URL - URL to target Redmine from where tickets will be dumped
-    - PROGRESS_KEY - API key allowing to access PROGRESS_URL
-    - REDMINE_DB - Sqlite file DB where tickets will be dumped
+    - REDMINE_URL - URL to target Redmine from where tickets will be dumped
+    - REDMINE_KEY - API key allowing to access REDMINE_URL
+    - MIRROR_SQLITE_DB - Sqlite file DB where tickets will be dumped
 3. execute :
 
 ```bash
