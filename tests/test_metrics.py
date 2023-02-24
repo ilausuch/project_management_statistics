@@ -1,5 +1,5 @@
 from datetime import datetime
-from db.models import Issue, IssueState
+from db.models import Issue, IssueEvent
 from metrics.sqlite_query import SQLiteQuery
 from metrics.metrics import Metrics
 from redmine.redmine_dumper import RedmineStatus
@@ -101,17 +101,19 @@ def test_status_count_by_date():
         )
     )
     session.add(
-        IssueState(
+        IssueEvent(
             issue_id=2,
-            field="status",
+            type="attr",
+            field="status_id",
             created_on=date_on_new,
             new_value=RedmineStatus.NEW.value
         )
     )
     session.add(
-        IssueState(
+        IssueEvent(
             issue_id=2,
-            field="status",
+            type="attr",
+            field="status_id",
             created_on=date_on_in_progress_2,
             new_value=RedmineStatus.IN_PROGRESS.value
         )
@@ -128,17 +130,19 @@ def test_status_count_by_date():
         )
     )
     session.add(
-        IssueState(
+        IssueEvent(
             issue_id=3,
-            field="status",
+            type="attr",
+            field="status_id",
             created_on=date_on_in_progress_1,
             new_value=RedmineStatus.IN_PROGRESS.value
         )
     )
     session.add(
-        IssueState(
+        IssueEvent(
             issue_id=3,
-            field="status",
+            type="attr",
+            field="status_id",
             created_on=date_move_on_resolved,
             new_value=RedmineStatus.RESOLVED.value
         )
