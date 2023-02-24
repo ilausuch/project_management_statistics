@@ -23,7 +23,7 @@ graph TD
 2. define following variables in this file:
     - PROGRESS_URL - URL to target Redmine from where tickets will be dumped
     - PROGRESS_KEY - API key allowing to access PROGRESS_URL
-    - REDMINE_DB - Sqlite DB where tickets will be dumped
+    - REDMINE_DB - Sqlite file DB where tickets will be dumped
 3. execute :
 
 ```bash

@@ -2,7 +2,7 @@ import sys
 import logging
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
-from db.models import Base, Issue, IssueState
+from db.models import Base, Issue, IssueEvent
 
 
 class SQLiteQuery:
@@ -40,8 +40,11 @@ class SQLiteQuery:
         issues_to_date = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on <= date).all()
         issues_dict = [issue.__dict__ for issue in issues_to_date]
         for issue in issues_dict:
-            state = self.session.query(IssueState).filter(IssueState.issue_id == issue["issue_id"], IssueState.field == "status")
-            state = state.filter(IssueState.created_on <= date).order_by(IssueState.created_on.desc()).first()
+            state = self.session.query(IssueEvent).filter(
+                IssueEvent.issue_id == issue["issue_id"],
+                IssueEvent.type == "attr",
+                IssueEvent.field == "status_id")
+            state = state.filter(IssueEvent.created_on <= date).order_by(IssueEvent.created_on.desc()).first()
             if state is not None:
                 issue["status_id"] = int(state.new_value)
 
