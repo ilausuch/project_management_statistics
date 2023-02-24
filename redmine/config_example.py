@@ -1,4 +1,4 @@
-PROGRESS_URL = ""
-REDMINE_DB = ""
-PROGRESS_URL = ""
-PROGRESS_KEY = ""
+# Edit this and rename as config.py
+REDMINE_URL = "https://progress.opensuse.org"
+MIRROR_SQLITE_DB = "containers_project.sql"
+REDMINE_KEY = ""
