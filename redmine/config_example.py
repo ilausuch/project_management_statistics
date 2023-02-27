@@ -8,6 +8,3 @@ REDMINE_KEY = ""
 
 # Max calls per minute
 REDMINE_QUERY_RATIO = 100
-
-# Output file path
-MIRROR_SQLITE_DB = "containers_project.sql"

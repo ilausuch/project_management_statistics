@@ -97,17 +97,17 @@ class RedmineIssueEvent(IssueEvent):
 
 class RedmineDumper:
 
-    def __init__(self):
+    def __init__(self, database: str, logging_level: int):
         self.logger = logging.getLogger(self.__module__)
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging_level)
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
+        handler.setLevel(logging_level)
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         self.logger.info("Init connection to %s", config.REDMINE_URL)
-        engine = create_engine(f"sqlite:///{config.MIRROR_SQLITE_DB}")
+        engine = create_engine(f"sqlite:///{database}")
         Base.metadata.create_all(
             engine, Base.metadata.tables.values(), checkfirst=True)
         session_maker = sessionmaker(bind=engine)
