@@ -6,6 +6,7 @@ import logging
 import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from ratelimiter import RateLimiter
 from redmine import config
 from db.models import Base, Issue, IssueEvent
 
@@ -111,6 +112,7 @@ class RedmineDumper:
             engine, Base.metadata.tables.values(), checkfirst=True)
         session_maker = sessionmaker(bind=engine)
         self.session = session_maker()
+        self.rate_limiter = RateLimiter(max_calls=config.REDMINE_QUERY_RATIO, period=60)
 
     def raw_query(self, url_ending: str, filters: Dict[str, list] = {}) -> Any:
         query = f"{config.REDMINE_URL}{url_ending}?utf8=✓"
@@ -120,12 +122,13 @@ class RedmineDumper:
                 filter_str = self.prepare_filter(
                     filter_key, filters[filter_key], '=')
                 query = f"{query}&{filter_str}"
-        self.logger.debug("Resulting request %s", query)
-        response = requests.get(query, headers={
-            'X-Redmine-API-Key': config.REDMINE_KEY}, timeout=60)
-        response.raise_for_status()
-        response_json = response.json()
-        return response_json
+        self.logger.debug("Resulting request %s. Waiting for rate_limiter...", query)
+        with self.rate_limiter:
+            response = requests.get(query, headers={
+                'X-Redmine-API-Key': config.REDMINE_KEY}, timeout=60)
+            response.raise_for_status()
+            response_json = response.json()
+            return response_json
 
     def issues(self, project: str, filters: Dict[str, list] = {}) -> list:
         response = self.raw_query(f"/projects/{project}/issues.json", filters)
