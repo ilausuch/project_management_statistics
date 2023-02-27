@@ -2,5 +2,5 @@ deprecated
 venv
 __pycache__
 redmine/config.py
-redmine_cache.sql
+*.sql
 notes.txt

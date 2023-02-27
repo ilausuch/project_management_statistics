@@ -23,6 +23,7 @@ graph TD
 2. define following variables in this file:
     - REDMINE_URL - URL to target Redmine from where tickets will be dumped
     - REDMINE_KEY - API key allowing to access REDMINE_URL
+    - REDMINE_QUERY_RATIO - Max request per minute to the redmine API
     - MIRROR_SQLITE_DB - Sqlite file DB where tickets will be dumped
 3. execute :
 
@@ -141,7 +142,7 @@ e.g.
 make docker-container
 ```
 
-The container created are:
+The containers created are:
 
 - **pms**: For the main container
 - **pms_test**: For the testing container
@@ -168,4 +169,26 @@ With podman or docker
 
 ```bash
 podman run -ti --rm -v <your_code_path>:/pms pms_test bash
+```
+
+## Developer
+
+### Prepare the venv
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements_test.txt
+```
+
+### Testing with redmine
+
+If you have already a redmine/config.py skip this step
+```bash
+cp ./redmine/config_example.py ./redmine/config.py
+```
+
+Run the tests with
+```bash
+make test
 ```
