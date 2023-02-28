@@ -4,6 +4,7 @@ disable=
  C0115, # missing-class-docstring 
  C0116, # missing-function-docstring
  R0801, # Similar lines in 2 files
+ R0903, # Too few public methods (0/2) (too-few-public-methods)
 
 recursive = true
 fail-under=9.9

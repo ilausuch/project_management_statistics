@@ -1,3 +1,7 @@
+from datetime import datetime
+from metrics.metrics_result import MetricsResults  # pylint: disable=import-error,no-name-in-module
+
+
 class Metrics:
 
     def __init__(self, query_manager):
@@ -25,7 +29,11 @@ class Metrics:
         :param filter: A dict of filters e.g. project_id=1
         :return: A dict with the format <status_id:count>
         """
-        return self._status_count(self.query_manager.issues(**filters))
+        issues = self.query_manager.issues(**filters)
+        status_counters = self._status_count(issues)
+        result = MetricsResults(dict(filters))
+        result.append_values(status_counters, datetime.now())
+        return result
 
     def status_count_by_date(self, date, **filters):
         """
@@ -33,4 +41,8 @@ class Metrics:
         :param filter: A dict of filters e.g. project_id=1
         :return: A dict with the format <status_id:count>
         """
-        return self._status_count(self.query_manager.status_snapshot(date, **filters))
+        issues = self.query_manager.status_snapshot(date, **filters)
+        status_counters = self._status_count(issues)
+        result = MetricsResults(dict(filters))
+        result.append_values(status_counters, datetime.now())
+        return result
