@@ -11,8 +11,12 @@ graph TD
     E -->|std Issues| F[fa:fa-gear Querying]
     F -->|std Issues| G[fa:fa-gear Metrics]
     G -->|statistics| H[fa:fa-gear Formating]
+    G -->|statistics| H2[fa:fa-gear Formating]
+    G -->|statistics| H3[fa:fa-gear Formating]
     H -->|influx db line format| I(fa:fa-database Influxdb)
     I --> J(fa:fa-chart-pie Grafana)
+    H2 -->|CSV| LibreOffice(Libreoffice/Excel)
+    H3 -->|JSON| Others
 ```
 
 ## Usage
