@@ -28,11 +28,10 @@ graph TD
     - REDMINE_URL - URL to target Redmine from where tickets will be dumped
     - REDMINE_KEY - API key allowing to access REDMINE_URL
     - REDMINE_QUERY_RATIO - Max request per minute to the redmine API
-    - MIRROR_SQLITE_DB - Sqlite file DB where tickets will be dumped
 3. execute :
 
 ```bash
-podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py --project <project_name>"
+podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py --project <project_name> --database <sqlite_file> "
 ```
 
 ## Querying
