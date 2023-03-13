@@ -1,6 +1,6 @@
 from datetime import datetime
 from db.models import Issue, IssueEvent
-from metrics.sqlite_query import SQLiteQuery
+from db.sqlite_query import SQLiteQuery
 from redmine.redmine_dumper import RedmineStatus
 
 

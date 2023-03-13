@@ -13,7 +13,7 @@ graph TD
     G -->|statistics| H[fa:fa-gear Formating]
     G -->|statistics| H2[fa:fa-gear Formating]
     G -->|statistics| H3[fa:fa-gear Formating]
-    H -->|influx db line format| I(fa:fa-database Influxdb)
+    H -->|influx input line format| I(fa:fa-database Influxdb)
     I --> J(fa:fa-chart-pie Grafana)
     H2 -->|CSV| LibreOffice(Libreoffice/Excel)
     H3 -->|JSON| Others
@@ -39,7 +39,7 @@ podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms ".
 Import SQLiteQuery
 
 ```
-from metrics.sqlite_query import SQLiteQuery
+from db.sqlite_query import SQLiteQuery
 ```
 
 Create the object
@@ -84,7 +84,7 @@ return: A list of issues
 Import Metrics and SQLiteQuery if is necessary
 ```
 from metrics.metrics import Metrics
-from metrics.sqlite_query import SQLiteQuery
+from db.sqlite_query import SQLiteQuery
 ```
 
 Create the objects
@@ -110,10 +110,19 @@ params:
 return: A dict with the format <status_id:count>
 
 
-## Formater
+## Formatters
+
+The formatters allow to convert a result from the metrics to an specific format.
+
+- InfluxDB input line format
+- CSV
+- JSON
+
+Convert a MetricsResult (result from metrics queries) to the format that CSV or influxdb 
+recognise as input to populate the database
 
 ```
-from metrics.influxdb_formater import MetricsInfluxdbFormater
+from metrics.influxdb_formatter import MetricsInfluxdbFormatter
 ```
 
 ### Methods
@@ -121,10 +130,10 @@ from metrics.influxdb_formater import MetricsInfluxdbFormater
 #### format_dict(measurement_name, values, date, **filters)
 Format a dictionary with the format key:value
 params:
-* measurement_name: Messurement name for the influx db
+* measurement_name: Measurement name for the influx db
 * values: the dictionary with the format <status_id:count>
 * date: the date of the measurement
-* filter: the filters used to obtain this messurement
+* filter: the filters used to obtain this measurement
 return: A formated string
 
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 from db.models import Issue, IssueEvent
-from metrics.sqlite_query import SQLiteQuery
+from db.sqlite_query import SQLiteQuery
 from metrics.metrics import Metrics
 from redmine.redmine_dumper import RedmineStatus
 
@@ -62,7 +62,7 @@ def test_count_status():
     session.commit()
 
     metrics = Metrics(query)
-    status_counters = metrics.status_count()
+    status_counters = metrics.status_count().get_first().values
     assert status_counters[RedmineStatus.NEW.value] == 1
     assert status_counters[RedmineStatus.WORKABLE.value] == 1
     assert status_counters[RedmineStatus.IN_PROGRESS.value] == 2
@@ -150,7 +150,7 @@ def test_status_count_by_date():
     session.commit()
 
     metrics = Metrics(query)
-    status_counters = metrics.status_count_by_date(date_on_in_progress_2)
+    status_counters = metrics.status_count_by_date(date_on_in_progress_2).get_first().values
     assert status_counters[RedmineStatus.NEW.value] == 1
     assert status_counters[RedmineStatus.IN_PROGRESS.value] == 2
     assert RedmineStatus.RESOLVED.value not in status_counters
