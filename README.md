@@ -118,23 +118,56 @@ The formatters allow to convert a result from the metrics to an specific format.
 - CSV
 - JSON
 
-Convert a MetricsResult (result from metrics queries) to the format that CSV or influxdb 
-recognise as input to populate the database
+Use the static method format to convert a MetricsResult (result from metrics queries)
+into the format recognized by influxdb, CSV, or JSON for populating a database or other systems.
 
+#### MetricsInfluxdbFormatter
 ```
 from metrics.influxdb_formatter import MetricsInfluxdbFormatter
+MetricsInfluxdbFormatter.format(measurement_name: str, metrics: MetricsResults)
 ```
 
-### Methods
-
-#### format_dict(measurement_name, values, date, **filters)
-Format a dictionary with the format key:value
 params:
 * measurement_name: Measurement name for the influx db
-* values: the dictionary with the format <status_id:count>
-* date: the date of the measurement
-* filter: the filters used to obtain this measurement
-return: A formated string
+* metrics: MetricsResults
+return: A formated string compabible with influxDB
+
+#### MetricsCSVFormatter
+```
+from formatters.csv_formatter import MetricsCSVFormatter
+MetricsInfluxdbFormatter.format(measurement_name: str, metrics: MetricsResults, separator: str = ",")
+```
+
+params:
+* measurement_name: Measurement name for the influx db
+* metrics: MetricsResults
+* separator: str
+return: A CSV formated string
+
+#### MetricsJSONFormatter
+```
+from formatters.csv_formatter import MetricsCSVFormatter
+MetricsInfluxdbFormatter.format(measurement_name: str, metrics: MetricsResults)
+```
+
+params:
+* measurement_name: Measurement name for the influx db
+* metrics: MetricsResults
+* separator: str
+return: A JSON string
+
+JSON schema
+```
+{
+    name: str,
+    filters: dict,
+    values: [ {
+        values: dict,
+        date: str(ISO 8601 time format)
+    }]
+}
+```
+e.g. `{'name': 'test', 'filters': {'f1': 1}, 'values': [{'values': {'v1': 1}, 'date': '2023-03-14T13:31:06.596142'}]}`
 
 
 ## Containers
