@@ -37,8 +37,10 @@ class RedmineIssue(Issue):
     def __init__(self, issue_dict):
         if 'id' in issue_dict:
             self.issue_id = issue_dict['id']
-        if 'project_' in issue_dict:
+        if 'project' in issue_dict:
             self.project_id = issue_dict['project']['id']
+        if 'tracker' in issue_dict:
+            self.type_id = issue_dict['tracker']['id']
         if 'status' in issue_dict:
             self.status_id = issue_dict['status']['id']
         if 'priority' in issue_dict:
