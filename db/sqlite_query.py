@@ -61,3 +61,13 @@ class SQLiteQuery:
         query = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on < date_out)
         issues_in_period = query.filter(or_(Issue.closed_on is None, Issue.closed_on > date_in)).all()
         return [issue.__dict__ for issue in issues_in_period]
+
+    def get_first_date(self, **filters):
+        """
+        Retrieve the date for the first object created, filtered by the specified criteria
+        based on the created_on attribute.
+        :param filter: A dict of filters e.g. project_id=1
+        :return: A datetime object
+        """
+        first_object = self.session.query(Issue).filter_by(**filters).order_by(Issue.created_on.asc()).first()
+        return first_object.__dict__["created_on"]

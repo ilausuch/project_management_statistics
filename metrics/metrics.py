@@ -31,6 +31,10 @@ class Metrics:
         """
         issues = self.query_manager.issues(**filters)
         status_counters = self._status_count(issues)
+        if issues:
+            first_issue = issues[0]
+            project_id = first_issue['project_id']
+            filters['project_id'] = project_id
         result = MetricsResults(dict(filters))
         result.append_values(status_counters, datetime.now())
         return result
@@ -43,6 +47,9 @@ class Metrics:
         """
         issues = self.query_manager.status_snapshot(date, **filters)
         status_counters = self._status_count(issues)
+        if issues:
+            project_id = issues[0]['project_id']
+            filters['project_id'] = project_id
         result = MetricsResults(dict(filters))
         result.append_values(status_counters, datetime.now())
         return result

@@ -216,6 +216,37 @@ With podman or docker
 podman run -ti --rm -v <your_code_path>:/pms pms_test bash
 ```
 
+## Scripts
+
+### Metrics By Period
+
+The `metrics_by_period.py` script is designed to loop over a range of dates and apply a specified metric to each date. 
+This script is useful for time series analysis and visualization of date-based metrics.
+
+#### Parameters
+
+Below are the parameters accepted by the `metrics_by_period.py` script:
+
+- `--start_date`: Start date in the format `YYYY-MM-DD`. If not provided, the script defaults to the Unix epoch (1970-01-01).
+
+- `--end_date`: End date in the format `YYYY-MM-DD`. If not provided, the script defaults to the current date.
+
+- `database`: Name of the database file to write the results to.
+
+- `--metric`: Name of the method to apply to each date. Defaults to `status_count`.
+
+- `--output_format`: Output format for the results. Valid options are `json`, `influxdb`, and `csv`. Defaults to `influxdb`.
+
+- `--measurement_name`: The name of the measurement used in InfluxDB. Defaults to `metrics`.
+
+### Usage
+
+To use the script, provide the necessary parameters as command line arguments:
+
+```bash
+python metrics_by_period.py --start_date 2022-03-01 --end_date 2023-03-30 --database my_database.db --metric status_count --output_format influxdb --measurement_name my_measurement
+```
+
 ## Developer
 
 ### Prepare the venv
