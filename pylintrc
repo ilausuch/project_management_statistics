@@ -5,6 +5,8 @@ disable=
  C0116, # missing-function-docstring
  R0801, # Similar lines in 2 files
  R0903, # Too few public methods (0/2) (too-few-public-methods)
+ W0102, # Dangerous default value {} as argument (dangerous-default-value)
+ E0611, # No name 'config' in module 'redmine' (no-name-in-module)
 
 recursive = true
 fail-under=9.9
