@@ -1,3 +1,4 @@
 SQLAlchemy==2.0.0
 ratelimiter==1.2.0.post0
 requests==2.28.2
+python-bugzilla
