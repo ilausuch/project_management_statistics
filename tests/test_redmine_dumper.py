@@ -1,5 +1,5 @@
 from datetime import datetime
-from redmine.redmine_dumper import RedmineDumper, RedmineIssue
+from redmine.redmine_dumper import RedmineDumper, RedmineIssue, RedmineIssueEvent
 
 
 # pylint: disable=super-init-not-called
@@ -93,3 +93,33 @@ def test_redmine_issue():
     assert issue.created_on == datetime.strptime(data["issue"]["created_on"], "%Y-%m-%dT%H:%M:%SZ")
     assert issue.updated_on == datetime.strptime(data["issue"]["updated_on"], "%Y-%m-%dT%H:%M:%SZ")
     assert issue.closed_on == datetime.strptime(data["issue"]["updated_on"], "%Y-%m-%dT%H:%M:%SZ")
+
+
+def test_redmine_issue_event():
+    issue_id = 1234
+    data = {
+        "id": 602570,
+        "user": {
+            "id": 25856,
+            "name": "name"
+        },
+        "notes": "",
+        "created_on": "2023-02-15T14:26:21Z",
+        "private_notes": False,
+        "details": [
+            {
+                "property": "attr",
+                "name": "status_id",
+                "old_value": "12",
+                "new_value": "15"
+            }
+        ]
+    }
+    issue_event = RedmineIssueEvent(data, data["details"][0], issue_id)
+    assert issue_event.issue_id == issue_id
+    assert issue_event.user_name == data["user"]["name"]
+    assert issue_event.created_on == datetime.strptime(data["created_on"], "%Y-%m-%dT%H:%M:%SZ")
+    assert issue_event.type == data["details"][0]["property"]
+    assert issue_event.field == data["details"][0]["name"]
+    assert issue_event.old_value == data["details"][0]["old_value"]
+    assert issue_event.new_value == data["details"][0]["new_value"]
