@@ -51,5 +51,5 @@ class Metrics:
             project_id = issues[0]['project_id']
             filters['project_id'] = project_id
         result = MetricsResults(dict(filters))
-        result.append_values(status_counters, datetime.now())
+        result.append_values(status_counters, date)
         return result
