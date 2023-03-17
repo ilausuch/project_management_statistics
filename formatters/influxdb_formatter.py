@@ -13,10 +13,16 @@ class MetricsInfluxdbFormatter:
         lines = []
         for entry in metrics.entries:
             if len(metrics.filters) > 0:
-                filter_str = ','.join([f"{key}={value}" for key, value in metrics.filters.items()])
+                filter_str = ','.join([
+                    f"{str(key).replace(' ', '_')}={str(value).replace(' ', '_')}"
+                    for key, value in metrics.filters.items()
+                ])
             else:
                 filter_str = "dummy=dummy"
 
-            values_str = ','.join([f"{key}={value}" for key, value in entry.values.items()])
+            values_str = ','.join([
+                f"{str(key).replace(' ', '_')}={str(value).replace(' ', '_')}"
+                for key, value in entry.values.items()
+            ])
             lines.append(f"{measurement_name} {filter_str} {values_str} {entry.date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}")
         return lines

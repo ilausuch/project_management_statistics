@@ -24,7 +24,7 @@ class SQLiteQuery:
     def issues(self, **filters):
         """
         Get all issues
-        :param filter: A dict of filters e.g. project_id=1
+        :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
         issues = self.session.query(Issue).filter_by(**filters).all()
@@ -34,7 +34,7 @@ class SQLiteQuery:
         """
         Get all the active and resolved issues with the status in a especific moment
         :param date (datetime): The date for the snapshot. None means the last values
-        :param filter: A dict of filters e.g. project_id=1
+        :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
         issues_to_date = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on <= date).all()
@@ -43,10 +43,10 @@ class SQLiteQuery:
             state = self.session.query(IssueEvent).filter(
                 IssueEvent.issue_id == issue["issue_id"],
                 IssueEvent.type == "attr",
-                IssueEvent.field == "status_id")
+                IssueEvent.field == "status")
             state = state.filter(IssueEvent.created_on <= date).order_by(IssueEvent.created_on.desc()).first()
             if state is not None:
-                issue["status_id"] = int(state.new_value)
+                issue["status"] = state.new_value
 
         return issues_dict
 
@@ -55,7 +55,7 @@ class SQLiteQuery:
         Get all the issues that are active (not closed) during a period of time
         :param date_in (datetime): The begining of the period
         :param date_out (datetime): The end of the period
-        :param filter: A dict of filters e.g. project_id=1
+        :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
         query = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on < date_out)
@@ -66,7 +66,7 @@ class SQLiteQuery:
         """
         Retrieve the date for the first object created, filtered by the specified criteria
         based on the created_on attribute.
-        :param filter: A dict of filters e.g. project_id=1
+        :param filter: A dict of filters e.g. project=1
         :return: A datetime object
         """
         first_object = self.session.query(Issue).filter_by(**filters).order_by(Issue.created_on.asc()).first()

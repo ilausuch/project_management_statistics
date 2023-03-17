@@ -54,20 +54,20 @@ query = SQLiteQuery(<file>)
 #### query.issues(**filters)
 Get all issues
 params:
-* filter: A dict of filters e.g. project_id=1
+* filter: A dict of filters e.g. project=project1
 return: A list of issues
 
 #### query.status_snapshot(date, **filters)
 Get all the active and resolved issues with the status in a especific moment
 params:
 * date (datetime): The date for the snapshot. None means the last values
-* *filter: A dict of filters e.g. project_id=1
+* *filter: A dict of filters e.g. project=project1
 return: A list of issues
 
 e.g.
 
 ```
-result = query.status_snapshot(date=datetime(2023, 1, 1), project_id=1)
+result = query.status_snapshot(date=datetime(2023, 1, 1), project=1)
 ```
 
 #### query.issues_active_in_period(date_in, date_out, **filters)
@@ -75,7 +75,7 @@ Get all the issues that are active (not closed) during a period of time
 params:
 * date_in (datetime): The begining of the period
 * date_out (datetime): The end of the period
-* filter: A dict of filters e.g. project_id=1
+* filter: A dict of filters e.g. project=project1
 return: A list of issues
 
 
@@ -98,16 +98,16 @@ metrics = Metrics(query)
 #### metrics.status_count(**filters)
 Classify the issues by status and return the ammount in each category
 params:
-* filter: A dict of filters e.g. project_id=1
+* filter: A dict of filters e.g. project=project1
 
-return: A dict with the format <status_id:count>
+return: A dict with the format <status:count>
 
 ### status_count_by_date(date, **filters)
 Classify the issues by status and return the ammount in each category
 params:
-* filter: A dict of filters e.g. project_id=1
+* filter: A dict of filters e.g. project=project1
 
-return: A dict with the format <status_id:count>
+return: A dict with the format <status:count>
 
 
 ## Formatters
