@@ -1,5 +1,4 @@
 import datetime
-from enum import Enum
 from typing import Dict, Any
 import sys
 import logging
@@ -11,40 +10,27 @@ from redmine import config
 from db.models import Base, Issue, IssueEvent
 
 
-class RedmineStatus(Enum):
-    NEW = 1
-    WORKABLE = 12
-    IN_PROGRESS = 2
-    BLOCKED = 15
-    FEEDBACK = 4
-
-    # Closed
-    RESOLVED = 3
-    CLOSED = 5
-    REJECTED = 6
-    UNKNOWN = 0
-
-
 REDMINE_DATE_FORMAT = '%Y-%m-%d'
 REDMINE_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-
 
 # pylint: disable=too-many-branches
 # pylint: disable=too-few-public-methods
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=super-init-not-called
+
+
 class RedmineIssue(Issue):
     def __init__(self, issue_dict):
         if 'id' in issue_dict:
             self.issue_id = issue_dict['id']
         if 'project' in issue_dict:
-            self.project_id = issue_dict['project']['id']
+            self.project = issue_dict['project']['name']
         if 'tracker' in issue_dict:
-            self.type_id = issue_dict['tracker']['id']
+            self.type = issue_dict['tracker']['name']
         if 'status' in issue_dict:
-            self.status_id = issue_dict['status']['id']
+            self.status = issue_dict['status']['name']
         if 'priority' in issue_dict:
-            self.priority_id = issue_dict['priority']['id']
+            self.priority = issue_dict['priority']['name']
         if 'author' in issue_dict:
             self.author = issue_dict['author']['name']
         if 'assigned_to' in issue_dict:
@@ -160,14 +146,14 @@ class RedmineDumper:
         offset = 0
         limit = 100
         while True:
-            redmine_issues = self.issues(project_name, {"status_id": "*", "limit": [limit],
+            redmine_issues = self.issues(project_name, {"status": "*", "limit": [limit],
                                                         "offset": [offset]})
             if len(redmine_issues) > 0:
                 for redmine_issue in redmine_issues:
                     redmine_sql_issue = RedmineIssue(redmine_issue)
                     from_db = self.session.query(Issue).filter(
                         Issue.issue_id == redmine_sql_issue.issue_id,
-                        Issue.project_id == redmine_sql_issue.project_id).first()
+                        Issue.project == redmine_sql_issue.project).first()
                     if from_db:
                         self.logger.debug(
                             "Issue with id=%d already exists updating", from_db.id)

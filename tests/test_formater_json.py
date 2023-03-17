@@ -6,10 +6,10 @@ from metrics.metrics_result import MetricsResults
 
 def test_format():
     date = datetime.now()
-    metrics = MetricsResults({"project_id": 1})
+    metrics = MetricsResults({"project": 1})
     metrics.append_values({"v1": 1, "v2": 1, "v3": 2}, date)
     result = MetricsJSONFormatter.format("test", metrics)
     parsed = json.loads(result)
     assert parsed["name"] == "test"
-    assert parsed["filters"]["project_id"] == 1
+    assert parsed["filters"]["project"] == 1
     assert parsed["data"][0]["values"]["v1"] == 1

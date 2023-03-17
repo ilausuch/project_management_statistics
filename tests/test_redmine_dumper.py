@@ -80,10 +80,10 @@ def test_redmine_issue():
 
     issue = RedmineIssue(data["issue"])
     assert issue.issue_id == data["issue"]["id"]
-    assert issue.project_id == data["issue"]["project"]["id"]
-    assert issue.type_id == data["issue"]["tracker"]["id"]
-    assert issue.status_id == data["issue"]["status"]["id"]
-    assert issue.priority_id == data["issue"]["priority"]["id"]
+    assert issue.project == data["issue"]["project"]["name"]
+    assert issue.type == data["issue"]["tracker"]["name"]
+    assert issue.status == data["issue"]["status"]["name"]
+    assert issue.priority == data["issue"]["priority"]["name"]
     assert issue.author == data["issue"]["author"]["name"]
     assert issue.assigned_to == data["issue"]["assigned_to"]["name"]
     assert issue.subject == data["issue"]["subject"]
@@ -109,7 +109,7 @@ def test_redmine_issue_event():
         "details": [
             {
                 "property": "attr",
-                "name": "status_id",
+                "name": "status",
                 "old_value": "12",
                 "new_value": "15"
             }

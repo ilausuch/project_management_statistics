@@ -2,7 +2,6 @@ from datetime import datetime
 from db.models import Issue, IssueEvent
 from db.sqlite_query import SQLiteQuery
 from metrics.metrics import Metrics
-from redmine.redmine_dumper import RedmineStatus
 
 
 def test_count_status():
@@ -16,45 +15,45 @@ def test_count_status():
     session.add(
         Issue(
             issue_id=1,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.NEW.value,
+            project=1,
+            type=1,
+            status="NEW",
             created_on=date_on_new
         )
     )
     session.add(
         Issue(
             issue_id=2,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.WORKABLE.value,
+            project=1,
+            type=1,
+            status="WORKABLE",
             created_on=date_on_new
         )
     )
     session.add(
         Issue(
             issue_id=3,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.IN_PROGRESS.value,
+            project=1,
+            type=1,
+            status="IN_PROGRESS",
             created_on=date_on_new
         )
     )
     session.add(
         Issue(
             issue_id=4,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.IN_PROGRESS.value,
+            project=1,
+            type=1,
+            status="IN_PROGRESS",
             created_on=date_on_new
         )
     )
     session.add(
         Issue(
             issue_id=5,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.RESOLVED.value,
+            project=1,
+            type=1,
+            status="RESOLVED",
             created_on=date_on_new,
             closed_on=date_move_on_resolved,
         )
@@ -63,10 +62,10 @@ def test_count_status():
 
     metrics = Metrics(query)
     status_counters = metrics.status_count().get_first().values
-    assert status_counters[RedmineStatus.NEW.value] == 1
-    assert status_counters[RedmineStatus.WORKABLE.value] == 1
-    assert status_counters[RedmineStatus.IN_PROGRESS.value] == 2
-    assert status_counters[RedmineStatus.RESOLVED.value] == 1
+    assert status_counters[str("NEW")] == 1
+    assert status_counters[str("WORKABLE")] == 1
+    assert status_counters[str("IN_PROGRESS")] == 2
+    assert status_counters[str("RESOLVED")] == 1
 
     session.close()
 
@@ -84,9 +83,9 @@ def test_status_count_by_date():
     session.add(
         Issue(
             issue_id=1,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.NEW.value,
+            project=1,
+            type=1,
+            status="NEW",
             created_on=date_on_new
         )
     )
@@ -94,9 +93,9 @@ def test_status_count_by_date():
     session.add(
         Issue(
             issue_id=2,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.IN_PROGRESS.value,
+            project=1,
+            type=1,
+            status="IN_PROGRESS",
             created_on=date_on_new
         )
     )
@@ -104,27 +103,27 @@ def test_status_count_by_date():
         IssueEvent(
             issue_id=2,
             type="attr",
-            field="status_id",
+            field="status",
             created_on=date_on_new,
-            new_value=RedmineStatus.NEW.value
+            new_value="NEW"
         )
     )
     session.add(
         IssueEvent(
             issue_id=2,
             type="attr",
-            field="status_id",
+            field="status",
             created_on=date_on_in_progress_2,
-            new_value=RedmineStatus.IN_PROGRESS.value
+            new_value="IN_PROGRESS"
         )
     )
     # Issue 3
     session.add(
         Issue(
             issue_id=3,
-            project_id=1,
-            type_id=1,
-            status_id=RedmineStatus.RESOLVED.value,
+            project=1,
+            type=1,
+            status="RESOLVED",
             created_on=date_on_new,
             closed_on=date_move_on_resolved,
         )
@@ -133,26 +132,27 @@ def test_status_count_by_date():
         IssueEvent(
             issue_id=3,
             type="attr",
-            field="status_id",
+            field="status",
             created_on=date_on_in_progress_1,
-            new_value=RedmineStatus.IN_PROGRESS.value
+            new_value="IN_PROGRESS"
         )
     )
     session.add(
         IssueEvent(
             issue_id=3,
             type="attr",
-            field="status_id",
+            field="status",
             created_on=date_move_on_resolved,
-            new_value=RedmineStatus.RESOLVED.value
+            new_value="RESOLVED"
         )
     )
     session.commit()
 
     metrics = Metrics(query)
     status_counters = metrics.status_count_by_date(date_on_in_progress_2).get_first().values
-    assert status_counters[RedmineStatus.NEW.value] == 1
-    assert status_counters[RedmineStatus.IN_PROGRESS.value] == 2
-    assert RedmineStatus.RESOLVED.value not in status_counters
+    print(status_counters)
+    assert status_counters[str("NEW")] == 1
+    assert status_counters[str("IN_PROGRESS")] == 2
+    assert "RESOLVED" not in status_counters
 
     session.close()
