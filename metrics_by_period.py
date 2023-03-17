@@ -24,7 +24,7 @@ metrics = Metrics(query_manager)
 
 # set default values for date_from and date_to, also for metric
 if args.start_date is None:
-    date_from = query_manager.get_first_date()
+    date_from = query_manager.get_first_date().replace(hour=0, minute=0, second=0, microsecond=0)
 else:
     date_from = datetime.strptime(args.start_date, '%Y-%m-%d').date()
 
