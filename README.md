@@ -1,26 +1,29 @@
-# project_management_statistics
+# Project Management Statistics
+
+Taking a comprehensive approach, it's important to recognize that ticket systems such as Issues and IssueEvents usually only store raw data.
+Through the processing and analysis facilitated by this project, we transform this data into valuable information 
+that can be used for in-depth analysis or making informed decisions.
 
 The motivation for this project is based on the challenges and limitations encountered while generating metrics using Telegraf and directly querying APIs.
 These challenges highlight the need for a more efficient and robust solution to capture historical data and calculate meaningful metrics.
 
-We are not implying that the Telegraf approach is worst. Telegraf serves its intended purpose effectively; however, the project we are proposing offers a 
-potentially more effective and comprehensive solution for designing and exploring new metric formulas. By capturing and storing historical data,
-this project aims to enhance the process of generating metrics by addressing the limitations observed in the Telegraf approach.
+Telegraf serves its intended purpose effectively; however, the project we are proposing offers a potentially more effective and comprehensive solution 
+for designing and exploring new metric formulas. By capturing and storing historical data, this project aims to enhance the process of generating metrics 
+by addressing the limitations observed in the Telegraf approach.
 
-Here are the key motivating factors for this project:
+The primary motivation for this project is the utilization of historical data, which offers several advantages when it comes to metrics.
+Some key benefits of using historical data in this context include:
 
-- **Delayed metric validation**: When calculating metrics from the moment a script starts running, it may take a day or two of collected data to verify
-if the metric works as expected. With historical information, you can validate the metric during the design phase and deploy a well-crafted metric to production.
-- **Difficulty in metric modification**: If you need to modify a metric, the changes will only apply from the moment of implementation,
-resulting in inconsistent historical metrics. With historical data, you can recalculate the entire metric using the updated formula, ensuring consistency throughout.
-- **API limitations**: Directly querying APIs often comes with security restrictions and response speed constraints, which can hinder the calculation of complex metrics.
-- **Present moment limitations**: With these API limitations and using Telegraf with scripts that directly query APIs, the calculated metrics are based on the current state of the issues.
-- **Missing metrics during downtime**: If Telegraf is offline for a period, the metrics generated during that time are lost,
-as the scripts do not consider history and only capture the present moment.
-- **Limited complexity and trends analysis**: Without historical data, it becomes challenging to create complex metrics based on trends or issue evolution over time.
+- Efficient metric validation: With historical information, you can validate metrics during the design phase,
+leading to well-crafted metrics in production without waiting for days of collected data.
+- Consistent metric modification: Historical data allows you to recalculate the entire metric with an updated formula, ensuring consistency throughout,
+rather than having changes apply only from the moment of implementation.
+- Overcoming API limitations: You can bypass API security restrictions and response speed constraints, enabling and speeding up the calculation of complex metrics.
+- Comprehensive metrics: Unlike directly querying APIs and relying on the present moment, historical data offers a more comprehensive view of issue states, leading to more accurate metrics.
+- Resilience during downtime: If a monitoring tool like Telegraf goes offline, historical data ensures that you won't miss any metrics generated during the downtime.
+- Advanced complexity and trend analysis: Access to historical data enables the creation of complex metrics based on trends and issue evolution over time, offering deeper insights.
 
-
-## Structure
+## Workflow
 
 This project uses a database schema to store and manage issues from different issue tracking systems. 
 The schema is illustrated in the following diagram:
@@ -41,6 +44,18 @@ graph TD
     H2 -->|CSV| LibreOffice(Libreoffice/Excel)
     H3 -->|JSON| Others
 ```
+
+In this project, we follow a structured workflow to process and analyze data from different sources:
+
+1. **Multiple data sources**: The data comes from various ticket systems, such as Progress and Bugzilla.
+2. **Mirroring process**: We use mirroring scripts to process the raw data from these sources and store it in a common database using standardized models.
+3. **Querying process**: We can query this database independently of the data source, enabling seamless access to the stored information.
+4. **Metrics generation**: The metrics process takes the query result (standardized data) and generates relevant metrics based on our needs and requirements.
+5. **Formatting and output**: Once the metrics have been generated, we format the results into a comprehensible output for different destinations.
+This could include InfluxDB for visualization in Grafana, CSV files for use in spreadsheet applications like LibreOffice or Excel, or JSON files for integration 
+with other applications that can read and process JSON data.
+
+By following this workflow, we ensure a smooth and efficient process for handling, analyzing, and generating valuable information from raw data across multiple ticket systems.
 
 ### Database
 
