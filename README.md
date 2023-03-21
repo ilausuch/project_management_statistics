@@ -14,14 +14,14 @@ by addressing the limitations observed in the Telegraf approach.
 The primary motivation for this project is the utilization of historical data, which offers several advantages when it comes to metrics.
 Some key benefits of using historical data in this context include:
 
-- Efficient metric validation: With historical information, you can validate metrics during the design phase,
+- **Efficient metric validation**: With historical information, you can validate metrics during the design phase,
 leading to well-crafted metrics in production without waiting for days of collected data.
-- Consistent metric modification: Historical data allows you to recalculate the entire metric with an updated formula, ensuring consistency throughout,
+- **Consistent metric modification**: Historical data allows you to recalculate the entire metric with an updated formula, ensuring consistency throughout,
 rather than having changes apply only from the moment of implementation.
-- Overcoming API limitations: You can bypass API security restrictions and response speed constraints, enabling and speeding up the calculation of complex metrics.
-- Comprehensive metrics: Unlike directly querying APIs and relying on the present moment, historical data offers a more comprehensive view of issue states, leading to more accurate metrics.
-- Resilience during downtime: If a monitoring tool like Telegraf goes offline, historical data ensures that you won't miss any metrics generated during the downtime.
-- Advanced complexity and trend analysis: Access to historical data enables the creation of complex metrics based on trends and issue evolution over time, offering deeper insights.
+- **Overcoming API limitations**: You can bypass API security restrictions and response speed constraints, enabling and speeding up the calculation of complex metrics.
+- **Comprehensive metrics**: Unlike directly querying APIs and relying on the present moment, historical data offers a more comprehensive view of issue states, leading to more accurate metrics.
+- **Resilience during downtime**: If a monitoring tool like Telegraf goes offline, historical data ensures that you won't miss any metrics generated during the downtime.
+- **Advanced complexity and trend analysis**: Access to historical data enables the creation of complex metrics based on trends and issue evolution over time, offering deeper insights.
 
 ## Workflow
 
@@ -186,7 +186,8 @@ Define the following variables in this file:
 Execute the following command, replacing <your_redmine_config_path>, <project_name>, and <sqlite_file> with appropriate values
 
 ```bash
-podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py --project <project_name> --database <sqlite_file> "
+podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py \
+       --project <project_name> --database <sqlite_file> "
 ```
 
 Once you've completed the steps, you will obtain an SQLite file containing the dumped database with all the relevant Progress issues. If the database already exists, 
@@ -216,7 +217,9 @@ As the project expands, more scripts can be added to further enhance the user ex
 
 
 ```bash
-python metrics_by_period.py --start_date 2022-03-01 --end_date 2023-03-30 --database <sqlite_file>  --metric status_count --output_format influxdb --measurement_name my_measurement
+python metrics_by_period.py --start_date 2022-03-01 --end_date 2023-03-30 \
+   --database <sqlite_file>  --metric status_count --output_format influxdb \
+   --measurement_name my_measurement
 ```
 
 ## For Developers
