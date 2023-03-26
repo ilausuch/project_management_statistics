@@ -52,8 +52,25 @@ In this project, we follow a structured workflow to process and analyze data fro
 3. **Querying process**: We can query this database independently of the data source, enabling seamless access to the stored information.
 4. **Metrics generation**: The metrics process takes the query result (standardized data) and generates relevant metrics based on our needs and requirements.
 5. **Formatting and output**: Once the metrics have been generated, we format the results into a comprehensible output for different destinations.
-This could include InfluxDB for visualization in Grafana, CSV files for use in spreadsheet applications like LibreOffice or Excel, or JSON files for integration 
+This could include InfluxDB for visualization in Grafana, CSV files for use in spreadsheet applications like LibreOffice or Excel, or JSON files for integration
 with other applications that can read and process JSON data.
+
+The main tool is called `dumper`. This requires the name of the subproject. Each subproject takes a different set of parameters.
+List them with `python3 dumper.py redmine --help` and `python3 dumper.py bugzilla --help`
+
+An example to query /bugzilla.suse.com/ is
+
+``` bash
+./dumper.py -v bugzilla -P "SUSE Linux Enterprise SERVER 15 SP5" -x 'bugs_resolved_per_product'
+```
+
+### bsc
+As for now each resource instance needs a `config.py` under its directory.
+
+
+TODO:
+
+### Dumping progress issues into local DB for further processing
 
 By following this workflow, we ensure a smooth and efficient process for handling, analyzing, and generating valuable information from raw data across multiple ticket systems.
 
