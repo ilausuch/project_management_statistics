@@ -1,0 +1,32 @@
+---
+version: 1
+formatters:
+  default:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter : default
+  bsc_fl:
+    class: logging.FileHandler
+    filename: '/tmp/bsc_metric.log'
+    level: DEBUG
+    formatter: default
+loggers:
+  dumper:
+    level: INFO
+    handlers: [console]
+    propagate: False
+  bsc:
+    level: INFO
+    handlers: [console, bsc_fl]
+    propagate: False
+  redmine:
+    level: INFO
+    handlers: [console]
+    propagate: False
+root:
+  level: INFO
+  handlers: [console]
+  #formatter : default

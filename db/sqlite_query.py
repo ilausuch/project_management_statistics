@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from db.models import Base, Issue, IssueEvent
 
-
+    
 class SQLiteQuery:
 
     def __init__(self, database) -> None:

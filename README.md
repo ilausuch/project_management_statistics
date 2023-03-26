@@ -21,6 +21,17 @@ graph TD
 
 ## Usage
 
+The main tool is called `dumper`. This takes the source of the instance where you want to fetch data and a database name which
+will store the results.
+
+Each subcommand takes a number of arguments. List them with `python3 dumper.py redmine --help` and `python3 dumper.py bugzilla --help`
+
+### bsc
+As for now each resource instance needs a `config.py` under its directory.
+
+
+TODO:
+
 ### Dumping progress issues into local DB for further processing
 
 1. Create the a redmine config file as a python file. e.g. `config.py`
