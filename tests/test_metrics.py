@@ -16,7 +16,6 @@ def test_count_status():
         Issue(
             issue_id=1,
             project=1,
-            type=1,
             status="NEW",
             created_on=date_on_new
         )
@@ -25,7 +24,6 @@ def test_count_status():
         Issue(
             issue_id=2,
             project=1,
-            type=1,
             status="WORKABLE",
             created_on=date_on_new
         )
@@ -34,7 +32,6 @@ def test_count_status():
         Issue(
             issue_id=3,
             project=1,
-            type=1,
             status="IN_PROGRESS",
             created_on=date_on_new
         )
@@ -43,7 +40,6 @@ def test_count_status():
         Issue(
             issue_id=4,
             project=1,
-            type=1,
             status="IN_PROGRESS",
             created_on=date_on_new
         )
@@ -52,7 +48,6 @@ def test_count_status():
         Issue(
             issue_id=5,
             project=1,
-            type=1,
             status="RESOLVED",
             created_on=date_on_new,
             closed_on=date_move_on_resolved,
@@ -84,7 +79,6 @@ def test_status_count_by_date():
         Issue(
             issue_id=1,
             project=1,
-            type=1,
             status="NEW",
             created_on=date_on_new
         )
@@ -94,7 +88,6 @@ def test_status_count_by_date():
         Issue(
             issue_id=2,
             project=1,
-            type=1,
             status="IN_PROGRESS",
             created_on=date_on_new
         )
@@ -122,7 +115,6 @@ def test_status_count_by_date():
         Issue(
             issue_id=3,
             project=1,
-            type=1,
             status="RESOLVED",
             created_on=date_on_new,
             closed_on=date_move_on_resolved,

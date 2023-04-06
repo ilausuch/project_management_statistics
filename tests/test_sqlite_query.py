@@ -15,7 +15,6 @@ def test_status_snapshot():
         Issue(
             issue_id=1,
             project=1,
-            type=1,
             status="RESOLVED",
             created_on=date_on_new,
             closed_on=date_move_on_resolved,
