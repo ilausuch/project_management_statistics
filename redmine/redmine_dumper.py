@@ -151,8 +151,9 @@ class RedmineDumper:
             if len(redmine_issues) > 0:
                 for redmine_issue in redmine_issues:
                     redmine_sql_issue = RedmineIssue(redmine_issue)
+                    issue_id = redmine_sql_issue.issue_id
                     from_db = self.session.query(Issue).filter(
-                        Issue.issue_id == redmine_sql_issue.issue_id,
+                        Issue.issue_id == issue_id,
                         Issue.project == redmine_sql_issue.project).first()
                     if from_db:
                         self.logger.debug(
@@ -161,10 +162,11 @@ class RedmineDumper:
                             setattr(from_db, attribute, value)
                     else:
                         self.logger.debug(
-                            "Issue with issue_id=%d not exists. Creating new record", redmine_sql_issue.issue_id)
+                            "Issue with issue_id=%d not exists. Creating new record", issue_id)
                         self.session.add(redmine_sql_issue)
 
-                    self.dump_to_db_journals(redmine_sql_issue.issue_id)
+                    events = self.dump_to_db_journals(issue_id)
+                    self.dump_to_db_tags(redmine_sql_issue, events)
 
                 self.logger.debug("Processed %s", len(redmine_issues))
                 offset += limit
@@ -192,3 +194,11 @@ class RedmineDumper:
                     self.logger.debug(
                         "IssueEvent for issue_id=%d not exists. Creating new record", event.issue_id)
                     self.session.add(event)
+        return events
+
+    def dump_to_db_tags(self, redmine_sql_issue, events) -> None:
+        tags = ""
+        for event in events:
+            if event.type == 'attr' and event.field == 'tag_list':
+                tags = event.new_value
+        redmine_sql_issue.tags = tags

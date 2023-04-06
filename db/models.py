@@ -11,6 +11,8 @@ class Issue(Base):
     issue_id = Column(String)
     project = Column(String)
     type = Column(String)
+    tags = Column(String)
+    context = Column(String)
     status = Column(String)
     priority = Column(String)
     author = Column(String)
@@ -45,4 +47,6 @@ class IssueAttribute(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     issue_id = mapped_column(ForeignKey("issue.issue_id"))
     key = Column(String)
-    value = Column(String)
+    values = Column(String)
+    _table_args__ = (UniqueConstraint(
+        'issue_id', 'key', name='_unique_key'),)
