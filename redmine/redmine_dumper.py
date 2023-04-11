@@ -146,7 +146,10 @@ class RedmineDumper:
         offset = 0
         limit = 100
         while True:
-            redmine_issues = self.issues(project_name, {"status": "*", "limit": [limit],
+            redmine_issues = self.issues(project_name, {"sort": "id:desc",
+                                                        "f[]": "status_id",
+                                                        "op[status_id]": "*",
+                                                        "limit": [limit],
                                                         "offset": [offset]})
             if len(redmine_issues) > 0:
                 for redmine_issue in redmine_issues:
@@ -171,6 +174,7 @@ class RedmineDumper:
                 self.logger.debug("Processed %s", len(redmine_issues))
                 offset += limit
             else:
+                self.logger.info("No more issues")
                 break
 
         self.session.commit()
