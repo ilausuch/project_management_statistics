@@ -25,7 +25,7 @@ podman-container-test:
 
 # Devel tools
 podman-flake8:
-	podman run --rm -v `pwd`:/pms pms_test "flake8 --max-line-length 130 *.py db/ redmine/ metrics/ tests/ formatters/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py  pms_test "flake8 --max-line-length 130 *.py db/ redmine/ metrics/ tests/ formatters/"
 podman-pylint:
 	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint *.py"
 	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint metrics/ db/ redmine/ formatters/"
@@ -40,3 +40,10 @@ podman-pylint-formatters:
 	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint tests/"
 podman-pylint-tests:
 	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint tests/"
+podman-test:
+	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pytest"
+podman-check:
+	make podman-container-test
+	make podman-flake8
+	make podman-pylint
+	make podman-test
