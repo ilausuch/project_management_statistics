@@ -199,17 +199,24 @@ the script reduces the load on the Redmine API and helps prevent reaching any im
 
 ### Generating metrics
 
-Currently, this project includes a single script, metrics_by_period.py, which allows users to extract metrics for a specified period or the entire dataset. 
+#### metrics_by_period
+
+metrics_by_period.py allows users to extract metrics for a specified period or the entire dataset. 
 The script supports the status_count metric and can output the results in various formats.
 
-The script accepts the following parameters:
+The script accepts the following command line arguments:
 
-- **start_date**: Start date (YYYY-MM-DD). If not provided, defaults to the epoch.
-- **end_date**: End date (YYYY-MM-DD). If not provided, defaults to today.
-- **database**: Name of the database file to write results to.
-- **metric**: Name of the method to apply to each date. Defaults to "status_count".
-- **output_format**: Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".
-- **measurement_name**: The name of the measurement used in InfluxDB.
+```bash
+usage: metrics_by_period.py [-h] [--start_date START_DATE] [--end_date END_DATE] [--increment_days INCREMENT_DAYS] [--metric METRIC] [--output_format OUTPUT_FORMAT] [--measurement_name MEASUREMENT_NAME] database
+```
+
+- **---start_date**: Start date (YYYY-MM-DD). If not provided, defaults to the epoch.
+- **---end_date**: End date (YYYY-MM-DD). If not provided, defaults to today.
+- **---increment_days**:  Specify the number of days to increment between each date in the specified period
+- **---metric**: Name of the method to apply to each date. Defaults to "status_count".
+- **---output_format**: Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".
+- **---measurement_name**: The name of the measurement used in InfluxDB.
+- **database**: Name of the database file where are the issues
 
 With these parameters, users can customize the metric extraction process according to their needs, making it easy to generate the desired output format and apply the appropriate metric method.
 
@@ -221,6 +228,35 @@ python metrics_by_period.py --start_date 2022-03-01 --end_date 2023-03-30 \
    --database <sqlite_file>  --metric status_count --output_format influxdb \
    --measurement_name my_measurement
 ```
+
+#### metrics_snapshot
+
+metrics_snapshot.py is a script that applies a metric method to a specified date or to the epoch, and outputs the result in the desired format.
+The script currently supports the status_count metric and can output the result in JSON, InfluxDB, or CSV format.
+
+The script accepts the following command line arguments:
+
+```bash
+usage: metrics_snapshot.py [-h] [--date DATE] [--metric METRIC] [--output_format OUTPUT_FORMAT] [--measurement_name MEASUREMENT_NAME] database
+```
+
+- **--date**: Spot date (YYYY-MM-DD). If not provided, defaults to today.
+- **--metric**: Name of the method to apply to each date. Defaults to "status_count".
+- **--output_format**: Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".
+- **--measurement_name**: The name of the measurement used in InfluxDB.
+- **database**: Name of the database file where are the issues
+
+Usage
+
+To use the script, simply run the metrics_snapshot.py file with the appropriate command line arguments.
+
+Here is an example of how to use the script:
+
+```bash
+python metrics_snapshot.py --date 2023-04-01 my_database.db
+```
+
+This command will apply the status_count metric to the date 2023-04-01 and output the result in InfluxDB format to the my_database.db file, with the measurement name set to metrics.
 
 ## For Developers
 
@@ -273,7 +309,7 @@ return: A list of issues
 
 Import Metrics and SQLiteQuery if is necessary
 ```
-from metrics.metrics import Metrics
+from metrics.metrics_status_count import Metrics
 from db.sqlite_query import SQLiteQuery
 ```
 
