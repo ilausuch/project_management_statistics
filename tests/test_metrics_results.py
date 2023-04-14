@@ -1,66 +1,39 @@
-from datetime import datetime
-from metrics.metrics_result import MetricsResults, MetricsResultsEntry
+from metrics.metrics_result import MetricsTimeSeries, MetricsResults
 
 
-def test_append_values():
-    results = MetricsResults()
-    values = {'key': 'value'}
-    date = datetime.now()
-    results.append_values(values, date)
-    assert len(results.entries) == 1
-    assert results.entries[0].values == values
-    assert results.entries[0].date == date
+def test_metrics_time_series():
+    example_data = [
+        {"date": "2023-04-01", "serie_A": 1.1, "serie_B": 2.2},
+        {"date": "2023-04-02", "serie_A": 1.3, "serie_B": 2.4},
+        {"date": "2023-04-03", "serie_A": 1.2, "serie_B": 2.1},
+    ]
+    example_metadata = {
+        "serie_A": {"project": "containers"},
+        "serie_B": {"project": "public cloud"},
+    }
+    mts = MetricsTimeSeries(data=example_data, metadata=example_metadata)
+
+    assert mts.get_first().equals(mts.data.iloc[0])
+    assert set(mts.value_keys()) == {"serie_A", "serie_B"}
+    assert set(mts.filter_keys()) == {"serie_A", "serie_B"}
+
+    mts.add_serie({"serie_C": {"project": "private cloud"}}, [{"date": "2023-04-01", "serie_C": 5.0}])
+
+    assert "serie_C" in mts.value_keys()
+    assert "serie_C" in mts.filter_keys()
+
+    mts.add_date("2023-04-04", {"serie_A": 1.5, "serie_B": 2.3, "serie_C": 5.2})
+
+    assert "2023-04-04" in mts.data.index.strftime("%Y-%m-%d")
 
 
-def test_append():
-    results = MetricsResults()
-    entry = MetricsResultsEntry({'key': 'value'}, datetime.now())
-    results.append(entry)
-    assert len(results.entries) == 1
-    assert results.entries[0] == entry
+def test_metrics_result():
+    data = {"serie_A": 1.1, "serie_B": 2.2}
+    metadata = {
+        "serie_A": {"project": "containers"},
+        "serie_B": {"project": "public cloud"},
+    }
+    results = MetricsResults(data=data, metadata=metadata)
 
-
-def test_append_results():
-    results = MetricsResults({'key': 'value'})
-    other = MetricsResults({'key': 'value'})
-    other.append_values({'other_key': 'other_value'}, datetime.now())
-
-    results.append_results(other)
-
-    assert len(results.entries) == 1
-    assert results.filters == {'key': 'value'}
-    assert results.metadata is None
-
-
-def test_get_first():
-    results = MetricsResults()
-    entry1 = MetricsResultsEntry({'key1': 'value1'}, datetime.now())
-    entry2 = MetricsResultsEntry({'key2': 'value2'}, datetime.now())
-    results.append(entry1)
-    results.append(entry2)
-    assert results.get_first() == entry1
-
-
-def test_value_keys():
-    results = MetricsResults()
-    entry = MetricsResultsEntry({'key': 'value'}, datetime.now())
-    results.append(entry)
-    assert results.value_keys() == {'key'}
-
-
-def test_filter_keys():
-    results = MetricsResults({'key': 'value'})
-    assert results.filter_keys() == {'key'}
-
-
-def test_import_entries():
-    results1 = MetricsResults({'key': 'value'})
-    results2 = MetricsResults({'key': 'value'})
-    results2.append_values({'other_key': 'other_value'}, datetime.now())
-    results2.metadata = {'metadata_key': 'metadata_value'}
-
-    results1.import_entries([results2])
-
-    assert len(results1.entries) == 1
-    assert results1.filters == {'key': 'value'}
-    assert results1.metadata == {'metadata_key': 'metadata_value'}
+    assert results.data == data
+    assert results.metadata == metadata

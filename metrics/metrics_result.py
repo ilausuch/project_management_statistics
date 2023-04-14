@@ -1,61 +1,77 @@
-from typing import List, Dict
 from datetime import datetime
-
-
-class MetricsResultsEntry:
-    def __init__(self, values: List, date: datetime):
-        self.values = values
-        self.date = date
+import pandas as pd
 
 
 class MetricsResults:
-    def __init__(self, filters: Dict = {}, metadata: Dict = None, entries: List = None):
-        self.filters = filters
+    def __init__(self, data, metadata=None, date=datetime.now()):
+        if metadata is None:
+            metadata = {}
+
+        self.date = date
+        self.data = data
         self.metadata = metadata
-        if entries is not None:
-            self.entries = entries
+
+    def as_array(self):
+        return [{**self.data, "date": self.date}]
+
+
+class MetricsTimeSeries:
+    def __init__(self, data=None, metadata=None):
+        if data is None:
+            data = []
+        if metadata is None:
+            metadata = {}
+
+        self.data = pd.DataFrame(data)
+        if not self.data.empty:
+            self.data["date"] = pd.to_datetime(self.data["date"])
+            self.data.set_index("date", inplace=True)
+        self.metadata = metadata
+
+    def add_serie(self, metadata, data=None):
+        if data is None:
+            data = []
+
+        self.metadata.update(metadata)
+
+        if not data:
+            return
+
+        new_data = pd.DataFrame(data)
+        new_data["date"] = pd.to_datetime(new_data["date"])
+        new_data.set_index("date", inplace=True)
+
+        if self.data.empty:
+            self.data = new_data
         else:
-            self.entries = []
+            self.data = self.data.merge(new_data, left_index=True, right_index=True, how='outer')
 
-    def append_values(self, values: List, date: datetime):
-        self.append(MetricsResultsEntry(values, date))
-
-    def append(self, entry: MetricsResultsEntry):
-        self.entries.append(entry)
-
-    def append_results(self, other: 'MetricsResults'):
-        self.entries.extend(other.entries)
-        if self.filters and other.filters and self.filters != other.filters:
-            raise ValueError("The filters dicts are not equal.")
-        self.filters.update(other.filters or {})
-        if not self.metadata and other.metadata:
-            self.metadata = other.metadata
-        elif self.metadata and other.metadata and self.metadata != other.metadata:
-            raise ValueError("The metadata dicts are not equal.")
+    def add_date(self, date, date_data):
+        date = pd.to_datetime(date)
+        date_data["date"] = date
+        new_data = pd.DataFrame([date_data]).set_index("date")
+        if self.data.empty:
+            self.data = new_data
+        else:
+            self.data.update(new_data)
+            self.data = self.data.combine_first(new_data)
 
     def get_first(self):
-        return self.entries[0]
+        return self.data.iloc[0]
 
     def value_keys(self):
-        return self.get_first().values.keys()
+        return [col for col in self.data.columns if col != 'date']
 
     def filter_keys(self):
-        return self.filters.keys()
+        return list(self.metadata.keys())
 
-    def import_entries(self, metric_result_list: List):
-        for metric_result in metric_result_list:
-            if metric_result is not self:
-                if self.metadata is None:
-                    self.metadata = metric_result.metadata
-                elif self.metadata and metric_result.metadata and self.metadata != metric_result.metadata:
-                    raise ValueError("The metadata dicts are not equal.")
+    def merge(self, other_metrics_results):
+        merged_data = self.data.merge(other_metrics_results.data, left_index=True, right_index=True, how='outer')
+        merged_metadata = {**self.metadata, **other_metrics_results.metadata}
+        return MetricsResults(merged_data.reset_index().to_dict(orient='records'), merged_metadata)
 
-                if self.filters is None or len(self.filters) == 0:
-                    self.filters = metric_result.filters
-                else:
-                    if self.filters != metric_result.filters:
-                        raise ValueError("The filters dicts are not equal.")
-                    self.filters.update(metric_result.filters or {})
+    def as_array(self):
+        return self.data.reset_index().to_dict(orient="records")
 
-                for entry in metric_result.entries:
-                    self.append(entry)
+    def force_zeros(self):
+        self.data.fillna(0, inplace=True)

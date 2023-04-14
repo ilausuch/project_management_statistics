@@ -1,7 +1,7 @@
 from datetime import datetime
 from db.models import Issue, IssueEvent
 from db.sqlite_query import SQLiteQuery
-from metrics.metrics import Metrics
+from metrics.metrics_status_count import MetricsStatusCount
 
 
 def test_count_status():
@@ -55,8 +55,8 @@ def test_count_status():
     )
     session.commit()
 
-    metrics = Metrics(query)
-    status_counters = metrics.status_count().get_first().values
+    metrics = MetricsStatusCount(query)
+    status_counters = metrics.status_count().data
     assert status_counters[str("NEW")] == 1
     assert status_counters[str("WORKABLE")] == 1
     assert status_counters[str("IN_PROGRESS")] == 2
@@ -65,10 +65,27 @@ def test_count_status():
     session.close()
 
 
-def test_status_count_by_date():
-    query = SQLiteQuery(":memory:")
-    session = query.session
+def prepare_data(session):
+    '''
+    Legend:
+        N - NEW
+        P - IN_PROGRESS
+        R - RESOLVED
+        . - No event
 
+    Issue Events:
+        Issue 1: N..............
+        Issue 2: N.......P......
+        Issue 3: N...P....R.....
+
+    Status Count at Each Moment:
+    index  date     N  P  R
+        0  Jan 1:   3  0  0
+        9  Jan 10:  2  1  0
+       14  Jan 15:  1  2  0
+       31  Feb 1:   1  1  1
+
+    '''
     date_on_new = datetime(2023, 1, 1)
     date_on_in_progress_1 = datetime(2023, 1, 10)
     date_on_in_progress_2 = datetime(2023, 1, 15)
@@ -126,6 +143,7 @@ def test_status_count_by_date():
             type="attr",
             field="status",
             created_on=date_on_in_progress_1,
+            old_value="NEW",
             new_value="IN_PROGRESS"
         )
     )
@@ -135,16 +153,52 @@ def test_status_count_by_date():
             type="attr",
             field="status",
             created_on=date_move_on_resolved,
+            old_value="IN_PROGRESS",
             new_value="RESOLVED"
         )
     )
     session.commit()
 
-    metrics = Metrics(query)
-    status_counters = metrics.status_count_by_date(date_on_in_progress_2).get_first().values
-    print(status_counters)
+
+def test_status_count_by_date():
+    query = SQLiteQuery(":memory:")
+    session = query.session
+
+    prepare_data(session)
+
+    metrics = MetricsStatusCount(query)
+    status_counters = metrics.status_count_by_date(datetime(2023, 1, 15)).data
     assert status_counters[str("NEW")] == 1
     assert status_counters[str("IN_PROGRESS")] == 2
     assert "RESOLVED" not in status_counters
+
+    session.close()
+
+
+def test_status_count_by_date_range():
+    query = SQLiteQuery(":memory:")
+    session = query.session
+
+    prepare_data(session)
+
+    metrics = MetricsStatusCount(query)
+    start_date = datetime(2023, 1, 1)
+    end_date = datetime(2023, 2, 1)
+    time_series = metrics.status_count_by_date_range(start_date=start_date, end_date=end_date)
+    results = time_series.as_array()
+
+    assert len(time_series.data) == 32
+    assert results[0]['NEW'] == 3
+    assert results[0]['IN_PROGRESS'] == 0
+    assert results[0]['RESOLVED'] == 0
+    assert results[9]['NEW'] == 2
+    assert results[9]['IN_PROGRESS'] == 1
+    assert results[9]['RESOLVED'] == 0
+    assert results[14]['NEW'] == 1
+    assert results[14]['IN_PROGRESS'] == 2
+    assert results[14]['RESOLVED'] == 0
+    assert results[31]['NEW'] == 1
+    assert results[31]['IN_PROGRESS'] == 1
+    assert results[31]['RESOLVED'] == 1
 
     session.close()
