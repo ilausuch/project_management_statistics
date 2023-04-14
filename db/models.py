@@ -27,6 +27,9 @@ class Issue(Base):
     __table_args__ = (UniqueConstraint(
         'issue_id', 'project', name='_unique_key'),)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class IssueEvent(Base):
     __tablename__ = 'issue_event'
@@ -41,6 +44,9 @@ class IssueEvent(Base):
     __table_args__ = (UniqueConstraint(
         'issue_id', 'type', 'field', 'created_on', name='_unique_key'),)
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class IssueAttribute(Base):
     __tablename__ = 'issue_atrribute'
@@ -50,3 +56,6 @@ class IssueAttribute(Base):
     values = Column(String)
     _table_args__ = (UniqueConstraint(
         'issue_id', 'key', name='_unique_key'),)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -38,15 +38,29 @@ class SQLiteQuery:
         :return: A list of issues
         """
         issues_to_date = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on <= date).all()
-        issues_dict = [issue.__dict__ for issue in issues_to_date]
+        issues_dict = [issue.as_dict() for issue in issues_to_date]
+
         for issue in issues_dict:
             state = self.session.query(IssueEvent).filter(
                 IssueEvent.issue_id == issue["issue_id"],
                 IssueEvent.type == "attr",
-                IssueEvent.field == "status")
-            state = state.filter(IssueEvent.created_on <= date).order_by(IssueEvent.created_on.desc()).first()
+                IssueEvent.field == "status",
+                IssueEvent.created_on <= date).order_by(
+                    IssueEvent.created_on.desc()).first()
             if state is not None:
                 issue["status"] = state.new_value
+            else:
+                state = self.session.query(IssueEvent).filter(
+                    IssueEvent.issue_id == issue["issue_id"],
+                    IssueEvent.type == "attr",
+                    IssueEvent.field == "status",
+                    IssueEvent.created_on > date).order_by(
+                        IssueEvent.created_on.asc()).first()
+                if state is not None:
+                    issue["status"] = state.old_value
+                else:
+                    if issue["closed_on"] is not None and date < issue["closed_on"]:
+                        issue["status"] = "New"
 
         return issues_dict
 
