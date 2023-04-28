@@ -199,6 +199,98 @@ the script reduces the load on the Redmine API and helps prevent reaching any im
 
 ### Generating metrics
 
+#### Filter Arguments
+
+Before seing the different scripts, we need to understand the filter arguments.
+The filter arguments allow you to filter your data based on specific conditions.
+You can use these arguments to filter by project, type, tags, context, status, priority, author, or assigned_to. Additionally,
+you can provide a JSON string to define more complex filters.
+
+##### Basic Usage
+
+To filter by project, type, tags, context, status, priority, author, or assigned_to, you can use the following flags:
+
+```bash
+--filter-project <project_name>
+--filter-type <type_name>
+--filter-tags <tag_name>
+--filter-context <context_name>
+--filter-status <status_name>
+--filter-priority <priority_name>
+--filter-author <author_name>
+--filter-assigned_to <assigned_to_name>
+--filter-target_version <target_version>
+```
+For example, to filter by project and author:
+
+```bash
+python your_script.py --filter-project "Project A" --filter-author "John Doe"
+```
+
+Quering for Null:
+
+```bash
+python your_script.py --filter-author "<null>"
+```
+
+##### Complex Filters
+
+To define more complex filters, you can provide a JSON string using the --filter flag.
+The JSON string should contain a dictionary with keys corresponding to the attributes you want to filter by,
+and values containing the operation and the value for the filter.
+
+The supported operations are:
+
+- **'eq'** (equal)
+- **'ne'** (not equal)
+- **'lt'** (less than)
+- **'le'** (less than or equal)
+- **'gt'** (greater than)
+- **'ge'** (greater than or equal)
+- **'like'** (case-sensitive pattern match)
+- **'ilike'** (case-insensitive pattern match)
+- **'or'** (logical OR between multiple filter conditions)
+
+Here's an example of a complex filter:
+
+```bash
+python <script>.py --filter '{
+  "project": {"op": "eq", "value": "Project A"},
+  "tags": {"op": "ilike", "value": "%tag1%"},
+  "status": {
+    "op": "or",
+    "value": [
+      {"op": "eq", "value": "New"},
+      {"op": "eq", "value": "In Progress"}
+    ]
+  },
+  "start_date": {"op": "gt", "value": "2022-01-01"}
+}'
+
+```
+
+This filter will return items that belong to "Project A", have a tag containing "tag1" (case-insensitive), h
+ave a status of either "New" or "In Progress", and have a start date greater than "2022-01-01".
+
+Note: eq is optional, so you can use "status": `{{"op": "eq", "value": "New"}}` or `{"status": "New"}`.
+
+For quering for Null using the `--filter` there are two options:
+
+Option 1: using the value `<null>`
+```bash
+{
+  "project": {"op": "eq", "value": "<null>"},
+}
+```
+
+Option 2: using the operation `{"op": "is_null"}`
+
+```bash
+{
+  "project": {"op": "is_null"},
+}
+```
+
 #### metrics_by_period
 
 metrics_by_period.py allows users to extract metrics for a specified period or the entire dataset. 
@@ -217,6 +309,7 @@ usage: metrics_by_period.py [-h] [--start_date START_DATE] [--end_date END_DATE]
 - **---output_format**: Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".
 - **---measurement_name**: The name of the measurement used in InfluxDB.
 - **database**: Name of the database file where are the issues
+- **<filters>**: see filters section
 
 With these parameters, users can customize the metric extraction process according to their needs, making it easy to generate the desired output format and apply the appropriate metric method.
 
@@ -245,6 +338,7 @@ usage: metrics_snapshot.py [-h] [--date DATE] [--metric METRIC] [--output_format
 - **--output_format**: Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".
 - **--measurement_name**: The name of the measurement used in InfluxDB.
 - **database**: Name of the database file where are the issues
+- **<filters>**: see filters section
 
 Usage
 

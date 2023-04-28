@@ -3,6 +3,9 @@ from db.models import Issue, IssueEvent
 from db.sqlite_query import SQLiteQuery
 
 
+filter_project_1 = {'project': {'op': 'eq', 'value': '1'}}
+
+
 def test_status_snapshot():
     query = SQLiteQuery(":memory:")
     session = query.session
@@ -50,7 +53,7 @@ def test_status_snapshot():
     session.commit()
 
     # Test case 1: Snapshot for an issue without an initial IssueEvent
-    result = query.status_snapshot(date=date_on_new, project=1)
+    result = query.status_snapshot(date=date_on_new, filters=filter_project_1)
     assert len(result) == 4
     assert result[0]["status"] == "New"
     assert result[1]["status"] == "New"
@@ -58,7 +61,7 @@ def test_status_snapshot():
     assert result[3]["status"] == "New"
 
     # Test case 2: Snapshot on the date of issue2 being resolved
-    result = query.status_snapshot(date=date_move_on_in_progress, project=1)
+    result = query.status_snapshot(date=date_move_on_in_progress, filters=filter_project_1)
     assert len(result) == 4
     assert result[0]["status"] == "In_Progress"
     assert result[1]["status"] == "In_Progress"
@@ -66,7 +69,7 @@ def test_status_snapshot():
     assert result[3]["status"] == "In_Progress"
 
     # Test case 3: Snapshot on the date of issue2 being resolved
-    result = query.status_snapshot(date=date_move_on_resolved, project=1)
+    result = query.status_snapshot(date=date_move_on_resolved, filters=filter_project_1)
     assert len(result) == 4
     assert result[0]["status"] == "Resolved"
     assert result[1]["status"] == "Resolved"
@@ -74,7 +77,7 @@ def test_status_snapshot():
     assert result[3]["status"] == "In_Progress"
 
     # Test case 4: Snapshot on the date of issue1 being closed
-    result = query.status_snapshot(date=date_move_on_closed, project=1)
+    result = query.status_snapshot(date=date_move_on_closed, filters=filter_project_1)
     assert len(result) == 4
     assert result[0]["status"] == "Closed"
     assert result[1]["status"] == "Resolved"
@@ -82,7 +85,7 @@ def test_status_snapshot():
     assert result[3]["status"] == "In_Progress"
 
     # Test case 5: Snapshot on a date after all the events
-    result = query.status_snapshot(date=datetime(2023, 3, 1), project=1)
+    result = query.status_snapshot(date=datetime(2023, 3, 1), filters=filter_project_1)
     assert len(result) == 4
     assert result[0]["status"] == "Closed"
     assert result[1]["status"] == "Resolved"
@@ -149,7 +152,7 @@ def test_issues_active_in_period():
     ))
     session.commit()
 
-    result = query.issues_active_in_period(date_in=date_period_in, date_out=date_period_out, project=1)
+    result = query.issues_active_in_period(date_in=date_period_in, date_out=date_period_out, filters=filter_project_1)
     assert len(result) == 4
 
     session.close()

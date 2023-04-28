@@ -6,6 +6,7 @@ from metrics.metrics_status_count import MetricsStatusCount
 from formatters.csv_formatter import MetricsCSVFormatter
 from formatters.influxdb_formatter import MetricsInfluxdbFormatter
 from formatters.json_formatter import MetricsJSONFormatter
+from utils.filter_parser import FilterParser
 
 # command line arguments
 parser = argparse.ArgumentParser(description='Loop over a range of dates and apply a metric to each date')
@@ -16,6 +17,8 @@ parser.add_argument('--metric', type=str, default='status_count',
 parser.add_argument('--output_format', type=str, default='influxdb',
                     help='Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".')
 parser.add_argument('--measurement_name', type=str, default='metrics', help='The name of the measurement name used in InfluxDB')
+filter_parser = FilterParser()
+filter_parser.add_filtering_arguments(parser)
 args = parser.parse_args()
 
 query_manager = SQLiteQuery(args.database)
@@ -36,13 +39,16 @@ else:
     print(f"Invalid output format '{args.output_format}'. Valid options are 'json', 'influxdb', and 'csv'.", file=sys.stderr)
     sys.exit(1)
 
+# prepare the filters
+filters = filter_parser.get_filters(args)
+
 # generate the output
 if args.metric == "status_count":
     if args.date is not None:
         date_snapshot = datetime.combine(datetime.strptime(args.date, '%Y-%m-%d').date(), datetime.min.time())
-        metric_result = metrics.status_count_by_date(date=date_snapshot)
+        metric_result = metrics.status_count_by_date(date=date_snapshot, filters=filters)
     else:
-        metric_result = metrics.status_count()
+        metric_result = metrics.status_count(filters=filters)
 
 for line in Formatter.format(args.measurement_name, metric_result):
     print(line)
