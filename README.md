@@ -258,6 +258,25 @@ python metrics_snapshot.py --date 2023-04-01 my_database.db
 
 This command will apply the status_count metric to the date 2023-04-01 and output the result in InfluxDB format to the my_database.db file, with the measurement name set to metrics.
 
+### Other scripts
+
+#### Redmine: get issue full information
+
+This script allows you to retrieve the full information of a Redmine issue using its ID.
+
+Usage
+
+```bash
+python get_issue_full_info.py <issue_id>
+```
+
+The script will output the full information of the specified issue in JSON format.
+
+Arguments:
+
+- **issue_id (required)**: the ID of the Redmine issue to retrieve.
+
+
 ## For Developers
 
 ## Querying

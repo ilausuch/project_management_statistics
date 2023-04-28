@@ -21,6 +21,7 @@ class Issue(Base):
     start_date = Column(DateTime)
     due_date = Column(DateTime)
     estimated_hours = Column(Float)
+    target_version = Column(String)
     created_on = Column(DateTime)
     updated_on = Column(DateTime)
     closed_on = Column(DateTime)
