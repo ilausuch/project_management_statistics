@@ -3,4 +3,5 @@ venv
 __pycache__
 redmine/config.py
 *.sql
+*.sql-journal
 notes.txt
