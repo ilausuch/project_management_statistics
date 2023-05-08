@@ -35,7 +35,7 @@ class RedmineIssue(Issue):
         if 'estimated_hours' in issue_dict:
             self.estimated_hours = issue_dict['estimated_hours']
         if 'fixed_version' in issue_dict:
-            self.target_version = str(issue_dict['fixed_version'])
+            self.target_version = issue_dict['fixed_version']['name']
         if 'start_date' in issue_dict and issue_dict['start_date'] is not None:
             self.start_date = datetime.datetime.strptime(issue_dict['start_date'], REDMINE_DATE_FORMAT)
         if 'due_date' in issue_dict and issue_dict['due_date'] is not None:
