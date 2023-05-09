@@ -482,3 +482,28 @@ Run the tests with
 ```bash
 make test
 ```
+
+## Other tools
+
+### SQLite3 Database discover
+
+This Python script is used to interact with an SQLite database. 
+It can list all table names, all column names in a specified table, or all distinct values in a specified field of a specified table.
+
+Usage
+
+```bash
+python script.py --database=my_database.db --table=my_table --field=my_field
+```
+
+This script takes the following command-line arguments:
+
+- **--database**: Required. The name of the SQLite database file.
+- **--table**: Optional. The name of the table in the database.
+- **--field**: Optional. The name of the field in the specified table.
+
+If no --table argument is provided, the script lists all the table names in the database.
+
+If a --table argument is provided but no --field argument is provided, the script lists all the column names in the specified table.
+
+If both --table and --field arguments are provided, the script lists all the distinct values in the specified field of the specified table.
