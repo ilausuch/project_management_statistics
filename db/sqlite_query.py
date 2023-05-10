@@ -3,6 +3,7 @@ import logging
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from db.models import Base, Issue, IssueEvent
+from db.filter_builder import FilterBuilder  # pylint: disable=import-error,no-name-in-module
 
 
 class SQLiteQuery:
@@ -21,23 +22,32 @@ class SQLiteQuery:
         session_maker = sessionmaker(bind=engine)
         self.session = session_maker()
 
-    def issues(self, **filters):
+    def __prepare_query_issues(self, filters):
+        query = self.session.query(Issue)
+        filter_builder = FilterBuilder(Issue)
+        filter_conditions = filter_builder.build_filters(filters)
+        query = query.filter(filter_conditions)
+        return query
+
+    def issues(self, filters):
         """
         Get all issues
         :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
-        issues = self.session.query(Issue).filter_by(**filters).all()
+        query = self.__prepare_query_issues(filters)
+        issues = query.all()
         return [issue.__dict__ for issue in issues]
 
-    def status_snapshot(self, date, **filters):
+    def status_snapshot(self, date, filters):
         """
         Get all the active and resolved issues with the status in a especific moment
         :param date (datetime): The date for the snapshot. None means the last values
         :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
-        issues_to_date = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on <= date).all()
+        query = self.__prepare_query_issues(filters)
+        issues_to_date = query.filter(Issue.created_on <= date).all()
         issues_dict = [issue.as_dict() for issue in issues_to_date]
 
         for issue in issues_dict:
@@ -64,7 +74,7 @@ class SQLiteQuery:
 
         return issues_dict
 
-    def issues_active_in_period(self, date_in, date_out, **filters):
+    def issues_active_in_period(self, date_in, date_out, filters):
         """
         Get all the issues that are active (not closed) during a period of time
         :param date_in (datetime): The begining of the period
@@ -72,7 +82,8 @@ class SQLiteQuery:
         :param filter: A dict of filters e.g. project=1
         :return: A list of issues
         """
-        query = self.session.query(Issue).filter_by(**filters).filter(Issue.created_on < date_out)
+        query = self.__prepare_query_issues(filters)
+        query = query.filter(Issue.created_on < date_out)
         issues_in_period = query.filter(or_(Issue.closed_on is None, Issue.closed_on > date_in)).all()
         return [issue.__dict__ for issue in issues_in_period]
 
@@ -83,5 +94,6 @@ class SQLiteQuery:
         :param filter: A dict of filters e.g. project=1
         :return: A datetime object
         """
-        first_object = self.session.query(Issue).filter_by(**filters).order_by(Issue.created_on.asc()).first()
+        query = self.__prepare_query_issues(filters)
+        first_object = query.order_by(Issue.created_on.asc()).first()
         return first_object.__dict__["created_on"]

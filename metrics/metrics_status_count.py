@@ -23,13 +23,13 @@ class MetricsStatusCount:
 
         return status_counters
 
-    def status_count(self, extract_metadata=[], **filters):
+    def status_count(self, extract_metadata=[], filters={}):
         """
         Classify the issues by status and return the ammount in each category
         :param filter: A dict of filters e.g. project=1
         :return: A dict with the format <status:count>
         """
-        issues = self.query_manager.issues(**filters)
+        issues = self.query_manager.issues(filters)
         status_counters = self._status_count(issues)
         metadata = {}
         if issues:
@@ -39,13 +39,13 @@ class MetricsStatusCount:
 
         return MetricsResults(data=status_counters, metadata=metadata)
 
-    def status_count_by_date(self, date, extract_metadata=[], **filters):
+    def status_count_by_date(self, date, extract_metadata=[], filters={}):
         """
         Classify the issues by status and return the ammount in each category
         :param filter: A dict of filters e.g. project=1
         :return: A dict with the format <status:count>
         """
-        issues = self.query_manager.status_snapshot(date, **filters)
+        issues = self.query_manager.status_snapshot(date, filters)
         status_counters = self._status_count(issues)
         metadata = {}
         if issues:

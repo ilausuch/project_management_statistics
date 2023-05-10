@@ -101,6 +101,7 @@ class RedmineDumper (RedmineConnector):
                                                         "offset": [offset]})
             if len(redmine_issues) > 0:
                 for redmine_issue in redmine_issues:
+                    self.logger.debug(redmine_issues)
                     redmine_sql_issue = RedmineIssue(redmine_issue)
                     issue_id = redmine_sql_issue.issue_id
                     from_db = self.session.query(Issue).filter(
