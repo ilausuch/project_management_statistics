@@ -23,6 +23,7 @@ class MetricsStatusCount:
 
         return status_counters
 
+    # Deprecated
     def status_count(self, extract_metadata=[], filters={}):
         """
         Classify the issues by status and return the ammount in each category

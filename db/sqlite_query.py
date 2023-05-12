@@ -57,6 +57,7 @@ class SQLiteQuery:
                 IssueEvent.field == "status",
                 IssueEvent.created_on <= date).order_by(
                     IssueEvent.created_on.desc()).first()
+
             if state is not None:
                 issue["status"] = state.new_value
             else:
