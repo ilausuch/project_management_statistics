@@ -117,6 +117,16 @@ class RedmineDumper (RedmineConnector):
                     from_db = self.session.query(Issue).filter(
                         Issue.issue_id == issue_id,
                         Issue.project == redmine_sql_issue.project).first()
+                    # Check if updated_at has changed
+                    if from_db and from_db.updated_on == redmine_sql_issue.updated_on:
+                        self.logger.debug(
+                            "Issue with id=%d has not been updated. Skipping", from_db.id)
+                        continue
+
+                    # Before issue we dump the tags to prevent incomplete data if the issue updating fails
+                    events = self.dump_to_db_journals(issue_id)
+                    self.dump_to_db_tags(redmine_sql_issue, events)
+
                     if from_db:
                         self.logger.debug(
                             "Issue with id=%d already exists updating", from_db.id)
@@ -126,9 +136,6 @@ class RedmineDumper (RedmineConnector):
                         self.logger.debug(
                             "Issue with issue_id=%d not exists. Creating new record", issue_id)
                         self.session.add(redmine_sql_issue)
-
-                    events = self.dump_to_db_journals(issue_id)
-                    self.dump_to_db_tags(redmine_sql_issue, events)
 
                 self.logger.debug("Processed %s", len(redmine_issues))
                 offset += limit
