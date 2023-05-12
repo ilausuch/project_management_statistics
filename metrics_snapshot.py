@@ -48,7 +48,8 @@ if args.metric == "status_count":
         date_snapshot = datetime.combine(datetime.strptime(args.date, '%Y-%m-%d').date(), datetime.min.time())
         metric_result = metrics.status_count_by_date(date=date_snapshot, filters=filters)
     else:
-        metric_result = metrics.status_count(filters=filters)
+        metric_result = metrics.status_count_by_date(date=datetime.now().replace(hour=0, minute=0, second=0,
+                                                                                 microsecond=0), filters=filters)
 
 for line in Formatter.format(args.measurement_name, metric_result):
     print(line)

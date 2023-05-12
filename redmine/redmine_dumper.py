@@ -1,8 +1,9 @@
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from redmine.redmine_connector import RedmineConnector
 from db.models import Base, Issue, IssueEvent
+from redmine.redmine_connector import RedmineConnector
+from redmine import config
 
 
 REDMINE_DATE_FORMAT = '%Y-%m-%d'
@@ -12,6 +13,10 @@ REDMINE_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 # pylint: disable=too-few-public-methods
 # pylint: disable=too-many-instance-attributes
 # pylint: disable=super-init-not-called
+
+
+def get_status_string(status_code):
+    return config.STATUS_CODE_TO_STRING.get(status_code, "UNKNOWN")
 
 
 class RedmineIssue(Issue):
@@ -58,9 +63,15 @@ class RedmineIssueEvent(IssueEvent):
 
         if change_dict["property"] == 'attr':
             self.type = 'attr'
-            self.field = change_dict['name']
-            self.old_value = change_dict['old_value']
-            self.new_value = change_dict['new_value']
+
+            if change_dict["name"] == 'status_id':
+                self.field = "status"
+                self.old_value = get_status_string(change_dict['old_value'])
+                self.new_value = get_status_string(change_dict['new_value'])
+            else:
+                self.field = change_dict['name']
+                self.old_value = change_dict['old_value']
+                self.new_value = change_dict['new_value']
 
     @staticmethod
     def get_events(journal_dict, issue_id):
@@ -101,7 +112,6 @@ class RedmineDumper (RedmineConnector):
                                                         "offset": [offset]})
             if len(redmine_issues) > 0:
                 for redmine_issue in redmine_issues:
-                    self.logger.debug(redmine_issues)
                     redmine_sql_issue = RedmineIssue(redmine_issue)
                     issue_id = redmine_sql_issue.issue_id
                     from_db = self.session.query(Issue).filter(
