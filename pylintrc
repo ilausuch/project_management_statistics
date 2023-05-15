@@ -8,6 +8,8 @@ disable=
  W0102, # Dangerous default value {} as argument (dangerous-default-value)
  E0611, # No name 'config' in module 'redmine' (no-name-in-module)
  R0912, # Too many branches (14/12) (too-many-branches)
+ R1702, # Too many nested blocks (6/5) (too-many-nested-blocks)
+
 recursive = true
 fail-under=9.9
 

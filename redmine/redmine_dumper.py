@@ -131,6 +131,8 @@ class RedmineDumper (RedmineConnector):
                         self.logger.debug(
                             "Issue with id=%d already exists updating", from_db.id)
                         for attribute, value in vars(redmine_sql_issue).items():
+                            if attribute == 'status':
+                                value = value.upper()
                             setattr(from_db, attribute, value)
                     else:
                         self.logger.debug(
