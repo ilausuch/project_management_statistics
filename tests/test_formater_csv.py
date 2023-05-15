@@ -7,8 +7,8 @@ def test_format():
     date = datetime.now()
     metrics = MetricsResults(data={"v1": 1, "v2": 1, "v3": 2}, metadata={"project": 1}, date=date)
     lines = MetricsCSVFormatter.format("test", metrics)
-    assert lines[0] == "measurement,project,v1,v2,v3,date"
-    assert lines[1] == f"test,1,1,1,2,{date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
+    assert lines[0] == "measurement,date,filter,v1,v2,v3"
+    assert lines[1] == f"test,{date.strftime('%Y-%m-%d')},1,1,1,2"
 
 
 def test_format_metrics_time_series():
@@ -25,6 +25,6 @@ def test_format_metrics_time_series():
     )
 
     lines = MetricsCSVFormatter.format("test", metrics_time_series)
-    assert lines[0] == "measurement,project,v1,v2,v3,date"
-    assert lines[1] == f"test,containers,1,1,2,{date1.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
-    assert lines[2] == f"test,containers,2,2,3,{date2.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
+    assert lines[0] == "measurement,date,filter,v1,v2,v3"
+    assert lines[1] == f"test,{date1.strftime('%Y-%m-%d')},containers,1,1,2"
+    assert lines[2] == f"test,{date2.strftime('%Y-%m-%d')},containers,2,2,3"

@@ -16,6 +16,9 @@ parser.add_argument('--metric', type=str, default='status_count',
                     help='Name of method to apply to each date. Defaults to "status_count".')
 parser.add_argument('--output_format', type=str, default='influxdb',
                     help='Output format. Valid options are "json", "influxdb", and "csv". Defaults to "influxdb".')
+parser.add_argument('--output_date_format', type=str, default='%Y-%m-%d',
+                    help='Output date format. Only valid for csv output. Defaults to "%Y-%m-%d".')
+
 parser.add_argument('--measurement_name', type=str, default='metrics', help='The name of the measurement name used in InfluxDB')
 filter_parser = FilterParser()
 filter_parser.add_filtering_arguments(parser)
@@ -51,5 +54,5 @@ if args.metric == "status_count":
         metric_result = metrics.status_count_by_date(date=datetime.now().replace(hour=0, minute=0, second=0,
                                                                                  microsecond=0), filters=filters)
 
-for line in Formatter.format(args.measurement_name, metric_result):
+for line in Formatter.format(measurement_name=args.measurement_name, metrics=metric_result, date_format=args.output_date_format):
     print(line)
