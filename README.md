@@ -173,7 +173,7 @@ The current database system is SQLite, which is native to Python and easily port
 
 ## Usage from user perspective
 
-### Dumping progress issues into local DB for further processing
+### Dumping progress issues into local DB for further processing (Redmine)
 
 In this section, we'll focus on setting up the environment to dump Progress issues into a local database for further processing. Follow these steps to get started:
 
@@ -187,7 +187,7 @@ Execute the following command, replacing <your_redmine_config_path>, <project_na
 
 ```bash
 podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py \
-       --project <project_name> --database <sqlite_file> "
+       redmine --project <project_name> --database <sqlite_file> "
 ```
 
 Once you've completed the steps, you will obtain an SQLite file containing the dumped database with all the relevant Progress issues. If the database already exists, 
