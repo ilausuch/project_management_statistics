@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import Column, Float, Integer, String, DateTime, UniqueConstraint, ForeignKey
 from sqlalchemy.orm import declarative_base, mapped_column
 
@@ -31,6 +32,10 @@ class Issue(Base):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def as_json(self):
+        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+        return json.dumps(res)
+
 
 class IssueEvent(Base):
     __tablename__ = 'issue_event'
@@ -48,6 +53,10 @@ class IssueEvent(Base):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def as_json(self):
+        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+        return json.dumps(res)
+
 
 class IssueAttribute(Base):
     __tablename__ = 'issue_atrribute'
@@ -60,3 +69,7 @@ class IssueAttribute(Base):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def as_json(self):
+        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+        return json.dumps(res)

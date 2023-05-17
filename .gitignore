@@ -206,3 +206,4 @@ bsc/config.py
 *.sql
 *.sql-journal
 notes.txt
+workdir/

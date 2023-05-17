@@ -9,6 +9,20 @@ class FakeDumper(RedmineDumper):
         pass
 
 
+def get_status_string(status_code):
+    STATUS_CODE_TO_STRING = {
+        '1': 'NEW',
+        '2': 'IN PROGRESS',
+        '3': 'RESOLVED',
+        '4': 'FEEDBACK',
+        '5': 'CLOSED',
+        '6': 'REJECTED',
+        '12': 'WORKABLE',
+        '15': 'BLOCKED'
+    }
+    return STATUS_CODE_TO_STRING.get(str(status_code), "UNKNOWN")
+
+
 def test_issues(monkeypatch):
     issues_list = [{'str': 1}, {'str': 1}]
     monkeypatch.setattr(RedmineDumper, "raw_query",
@@ -17,7 +31,9 @@ def test_issues(monkeypatch):
     assert issues_list == dumper.issues('test')
 
 
-def test_redmine_issue():
+def test_redmine_issue(monkeypatch):
+    monkeypatch.setattr("redmine.redmine_dumper.get_status_string", get_status_string)
+
     a_datetime = "2023-03-14T16:19:48Z"
     a_date = "2023-03-14"
     data = {
@@ -33,7 +49,7 @@ def test_redmine_issue():
             },
             "status": {
                 "id": 2,
-                "name": "In Progress"
+                "name": "IN PROGRESS"
             },
             "priority": {
                 "id": 4,
@@ -95,7 +111,9 @@ def test_redmine_issue():
     assert issue.closed_on == datetime.strptime(data["issue"]["updated_on"], "%Y-%m-%dT%H:%M:%SZ")
 
 
-def test_redmine_issue_event():
+def test_redmine_issue_event(monkeypatch):
+    monkeypatch.setattr("redmine.redmine_dumper.get_status_string", get_status_string)
+
     issue_id = 1234
     data = {
         "id": 602570,
