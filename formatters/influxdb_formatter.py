@@ -1,10 +1,13 @@
 from typing import Union
 from metrics.metrics_result import MetricsResults, MetricsTimeSeries
 
+# pylint: disable=unused-argument
+
 
 class MetricsInfluxdbFormatter:
     @staticmethod
-    def format(measurement_name: str, metrics: Union[MetricsResults, MetricsTimeSeries]):
+    def format(measurement_name: str, metrics: Union[MetricsResults, MetricsTimeSeries],
+               *args, **kwargs):
         """
         Constructs a list of dictionaries with the key:value
         :param measurement_name: Measurement name for the influx db
@@ -32,3 +35,9 @@ class MetricsInfluxdbFormatter:
             ])
             lines.append(f"{measurement_name} {filter_str} {values_str} {entry['date'].strftime('%Y-%m-%dT%H:%M:%S.%fZ')}")
         return lines
+
+    @staticmethod
+    def print(measurement_name: str, metrics: Union[MetricsResults, MetricsTimeSeries],
+              *args, **kwargs):
+        for line in MetricsInfluxdbFormatter.format(measurement_name, metrics):
+            print(line)

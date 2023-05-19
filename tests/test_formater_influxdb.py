@@ -26,3 +26,12 @@ def test_format_metrics_time_series():
     lines = MetricsInfluxdbFormatter.format("test", metrics_time_series)
     assert lines[0] == f"test project=containers v1=1,v2=1,v3=2 {date1.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
     assert lines[1] == f"test project=containers v1=2,v2=2,v3=3 {date2.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
+
+
+def test_print_metrics_results(capsys):
+    date = datetime.now()
+    metrics = MetricsResults(data={"v1": 1, "v2": 1, "v3": 2}, metadata={"project": 1}, date=date)
+    MetricsInfluxdbFormatter.print("test", metrics)
+
+    captured = capsys.readouterr()
+    assert captured.out == f"test project=1 v1=1,v2=1,v3=2 {date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}\n"
