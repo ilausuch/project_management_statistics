@@ -28,7 +28,7 @@ class RedmineIssue(Issue):
         if 'tracker' in issue_dict:
             self.type = issue_dict['tracker']['name']
         if 'status' in issue_dict:
-            self.status = issue_dict['status']['name']
+            self.status = get_status_string(issue_dict['status']['id'])
         if 'priority' in issue_dict:
             self.priority = issue_dict['priority']['name']
         if 'author' in issue_dict:
@@ -114,6 +114,7 @@ class RedmineDumper (RedmineConnector):
                 for redmine_issue in redmine_issues:
                     redmine_sql_issue = RedmineIssue(redmine_issue)
                     issue_id = redmine_sql_issue.issue_id
+
                     from_db = self.session.query(Issue).filter(
                         Issue.issue_id == issue_id,
                         Issue.project == redmine_sql_issue.project).first()
@@ -125,14 +126,12 @@ class RedmineDumper (RedmineConnector):
 
                     # Before issue we dump the tags to prevent incomplete data if the issue updating fails
                     events = self.dump_to_db_journals(issue_id)
-                    self.dump_to_db_tags(redmine_sql_issue, events)
+                    redmine_sql_issue.tags = self.dump_to_db_tags(events)
 
                     if from_db:
                         self.logger.debug(
                             "Issue with id=%d already exists updating", from_db.id)
                         for attribute, value in vars(redmine_sql_issue).items():
-                            if attribute == 'status':
-                                value = value.upper()
                             setattr(from_db, attribute, value)
                     else:
                         self.logger.debug(
@@ -151,8 +150,8 @@ class RedmineDumper (RedmineConnector):
         journals = self.journals(issue_id)
         events = []
         for journal in journals:
-            events = RedmineIssueEvent.get_events(journal, issue_id)
-            for event in events:
+            journal_events = RedmineIssueEvent.get_events(journal, issue_id)
+            for event in journal_events:
                 event_from_db = self.session.query(IssueEvent).filter(
                     IssueEvent.issue_id == event.issue_id,
                     IssueEvent.type == event.type,
@@ -163,15 +162,17 @@ class RedmineDumper (RedmineConnector):
                         "IssueEvent with id=%d and already exists updating", event_from_db.id)
                     for attribute, value in vars(event).items():
                         setattr(event_from_db, attribute, value)
+                        events.append(event_from_db)
                 else:
                     self.logger.debug(
                         "IssueEvent for issue_id=%d not exists. Creating new record", event.issue_id)
                     self.session.add(event)
+                    events.append(event)
         return events
 
-    def dump_to_db_tags(self, redmine_sql_issue, events) -> None:
+    def dump_to_db_tags(self, events) -> None:
         tags = ""
         for event in events:
             if event.type == 'attr' and event.field == 'tag_list':
                 tags = event.new_value
-        redmine_sql_issue.tags = tags
+        return tags
