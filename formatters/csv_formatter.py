@@ -27,3 +27,9 @@ class MetricsCSVFormatter:
                          f"{separator}{filter_str}{separator}{values_str}")
 
         return lines
+
+    @staticmethod
+    def print(measurement_name: str, metrics: Union[MetricsResults, MetricsTimeSeries],
+              separator: str = ",", date_format: str = "%Y-%m-%d"):
+        for line in MetricsCSVFormatter.format(measurement_name, metrics, separator, date_format):
+            print(line)

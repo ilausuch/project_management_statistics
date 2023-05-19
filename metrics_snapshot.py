@@ -54,5 +54,4 @@ if args.metric == "status_count":
         metric_result = metrics.status_count_by_date(date=datetime.now().replace(hour=0, minute=0, second=0,
                                                                                  microsecond=0), filters=filters)
 
-for line in Formatter.format(measurement_name=args.measurement_name, metrics=metric_result, date_format=args.output_date_format):
-    print(line)
+Formatter.print(measurement_name=args.measurement_name, metrics=metric_result, date_format=args.output_date_format)

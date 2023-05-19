@@ -61,5 +61,4 @@ else:
     print(f"Metric '{args.metric}' is not implemented.", file=sys.stderr)
     sys.exit(1)
 
-for line in Formatter.format(measurement_name=args.measurement_name, metrics=metric_result, date_format=args.output_date_format):
-    print(line)
+Formatter.print(measurement_name=args.measurement_name, metrics=metric_result, date_format=args.output_date_format)

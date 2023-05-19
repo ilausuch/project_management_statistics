@@ -10,7 +10,7 @@ class FakeDumper(RedmineDumper):
 
 
 def get_status_string(status_code):
-    STATUS_CODE_TO_STRING = {
+    codes = {
         '1': 'NEW',
         '2': 'IN PROGRESS',
         '3': 'RESOLVED',
@@ -20,7 +20,7 @@ def get_status_string(status_code):
         '12': 'WORKABLE',
         '15': 'BLOCKED'
     }
-    return STATUS_CODE_TO_STRING.get(str(status_code), "UNKNOWN")
+    return codes.get(str(status_code), "UNKNOWN")
 
 
 def test_issues(monkeypatch):
