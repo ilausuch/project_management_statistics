@@ -2,6 +2,7 @@
 import argparse
 import logging
 import logging.config
+import yaml
 
 from redmine.redmine_dumper import RedmineDumper
 
@@ -57,12 +58,13 @@ def main():
                                  which can be used')
     args = parser.parse_args()
 
+    with open('logging.yaml', 'r') as ymlfile:
+        conf = yaml.safe_load(ymlfile)
+
+    logging.config.dictConfig(conf)
+    logger = logging.getLogger(__package__)
     if args.v is True:
-        logging_level = logging.DEBUG
-    else:
-        logging_level = logging.INFO
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging_level)
+        logger.setLevel(logging.DEBUG)
 
     if args.source == "redmine":
         if args.project is None:
@@ -71,7 +73,7 @@ def main():
 
         logger.info("Dumping from %s (project: %s) to database %s",
                     args.source, args.project, args.database)
-        dumper = RedmineDumper(args.database, logging_level)
+        dumper = RedmineDumper(args.database, logger.level)
         dumper.dump_to_db(args.project)
     else:
         raise NotImplementedError(f"'--source {args.source}' not supported")
