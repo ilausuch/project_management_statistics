@@ -49,6 +49,8 @@ class RedmineConnector:
 
     def relations(self, issue_id):
         issue = self.issue(issue_id, {"include": ["relations"]})
+        if 'relations' not in issue:
+            return []
         return issue['relations']
 
     def issue_full(self, issue_id):

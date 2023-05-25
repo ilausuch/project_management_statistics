@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models import Base, Issue, IssueEvent
+from db.models import Base, Issue, IssueEvent, IssueRelation
 from redmine.redmine_connector import RedmineConnector
 from redmine import config
 
@@ -41,6 +41,8 @@ class RedmineIssue(Issue):
             self.estimated_hours = issue_dict['estimated_hours']
         if 'fixed_version' in issue_dict:
             self.target_version = issue_dict['fixed_version']['name']
+        if 'parent' in issue_dict and 'id' in issue_dict['parent']:
+            self.parent_issue_id = str(issue_dict['parent']['id'])
         if 'start_date' in issue_dict and issue_dict['start_date'] is not None:
             self.start_date = datetime.datetime.strptime(issue_dict['start_date'], REDMINE_DATE_FORMAT)
         if 'due_date' in issue_dict and issue_dict['due_date'] is not None:
@@ -81,6 +83,19 @@ class RedmineIssueEvent(IssueEvent):
                 if change_dict["property"] == 'attr':
                     result.append(RedmineIssueEvent(journal_dict, change_dict, issue_id))
         return result
+
+
+class RedmineIssueRelation(IssueRelation):
+    def __init__(self, relation_dict, issue_id):
+        if 'id' in relation_dict:
+            self.relation_id = relation_dict['id']
+        if 'issue_id' in relation_dict:
+            self.issue_id = issue_id
+        if 'issue_to_id' in relation_dict:
+            self.relation_issue_id = relation_dict['issue_to_id']
+        if 'relation_type' in relation_dict:
+            self.relation_type = relation_dict['relation_type']
+
 
 # pylint: enable=too-many-branches
 # pylint: enable=too-few-public-methods
@@ -138,6 +153,8 @@ class RedmineDumper (RedmineConnector):
                             "Issue with issue_id=%d not exists. Creating new record", issue_id)
                         self.session.add(redmine_sql_issue)
 
+                    self.dump_to_db_relations(issue_id)
+
                 self.logger.debug("Processed %s", len(redmine_issues))
                 offset += limit
             else:
@@ -176,3 +193,8 @@ class RedmineDumper (RedmineConnector):
             if event.type == 'attr' and event.field == 'tag_list':
                 tags = event.new_value
         return tags
+
+    def dump_to_db_relations(self, issue_id: int) -> None:
+        relations = self.relations(issue_id)
+        for relation in relations:
+            self.session.add(RedmineIssueRelation(relation, issue_id))
