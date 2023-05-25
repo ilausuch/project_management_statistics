@@ -5,6 +5,15 @@ from sqlalchemy.orm import declarative_base, mapped_column
 Base = declarative_base()
 
 
+def as_dict(obj):
+    return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+
+
+def as_json(obj):
+    res = {c.name: str(getattr(obj, c.name)) for c in obj.__table__.columns}
+    return json.dumps(res)
+
+
 # pylint: disable=too-few-public-methods
 class Issue(Base):
     __tablename__ = 'issue'
@@ -23,6 +32,7 @@ class Issue(Base):
     due_date = Column(DateTime)
     estimated_hours = Column(Float)
     target_version = Column(String)
+    parent_issue_id = Column(String)
     created_on = Column(DateTime)
     updated_on = Column(DateTime)
     closed_on = Column(DateTime)
@@ -30,11 +40,10 @@ class Issue(Base):
         'issue_id', 'project', name='_unique_key'),)
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return as_dict(self)
 
     def as_json(self):
-        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-        return json.dumps(res)
+        return as_json(self)
 
 
 class IssueEvent(Base):
@@ -51,11 +60,10 @@ class IssueEvent(Base):
         'issue_id', 'type', 'field', 'created_on', name='_unique_key'),)
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return as_dict(self)
 
     def as_json(self):
-        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-        return json.dumps(res)
+        return as_json(self)
 
 
 class IssueAttribute(Base):
@@ -68,8 +76,24 @@ class IssueAttribute(Base):
         'issue_id', 'key', name='_unique_key'),)
 
     def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        return as_dict(self)
 
     def as_json(self):
-        res = {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-        return json.dumps(res)
+        return as_json(self)
+
+
+class IssueRelation(Base):
+    __tablename__ = 'issue_relations'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    relation_id = Column(String)
+    issue_id = mapped_column(ForeignKey("issue.issue_id"))
+    relation_issue_id = Column(String)
+    relation_type = Column(String)
+    _table_args__ = (UniqueConstraint(
+        'relation_id', 'issue_id', name='_unique_key'),)
+
+    def as_dict(self):
+        return as_dict(self)
+
+    def as_json(self):
+        return as_json(self)

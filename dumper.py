@@ -58,7 +58,7 @@ def main():
                                  which can be used')
     args = parser.parse_args()
 
-    with open('logging.yaml', 'r') as ymlfile:
+    with open('logging.yaml', mode="r", encoding="utf-8") as ymlfile:
         conf = yaml.safe_load(ymlfile)
 
     logging.config.dictConfig(conf)
