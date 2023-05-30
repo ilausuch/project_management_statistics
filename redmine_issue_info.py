@@ -1,7 +1,7 @@
 import argparse
 import json
 import logging
-from redmine.redmine_connector import RedmineConnector
+from trackers.redmine.redmine_connector import RedmineConnector
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 from datetime import datetime
-from redmine.redmine_dumper import RedmineDumper, RedmineIssue, RedmineIssueEvent
+from trackers.redmine.redmine_dumper import RedmineDumper, RedmineIssue, RedmineIssueEvent
 
 
 # pylint: disable=super-init-not-called
@@ -32,7 +32,7 @@ def test_issues(monkeypatch):
 
 
 def test_redmine_issue(monkeypatch):
-    monkeypatch.setattr("redmine.redmine_dumper.get_status_string", get_status_string)
+    monkeypatch.setattr("trackers.redmine.redmine_dumper.get_status_string", get_status_string)
 
     a_datetime = "2023-03-14T16:19:48Z"
     a_date = "2023-03-14"
@@ -112,7 +112,7 @@ def test_redmine_issue(monkeypatch):
 
 
 def test_redmine_issue_event(monkeypatch):
-    monkeypatch.setattr("redmine.redmine_dumper.get_status_string", get_status_string)
+    monkeypatch.setattr("trackers.redmine.redmine_dumper.get_status_string", get_status_string)
 
     issue_id = 1234
     data = {
