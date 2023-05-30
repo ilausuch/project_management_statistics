@@ -15,18 +15,19 @@ class FilterParser:
         parser.add_argument('--filter', type=str, help='Filter by JSON string')
 
     def _parse_filters(self, args):
-        filters = json.loads(args.filter) if args.filter else {}
+        print(args)
+        filters = json.loads(args['filter']) if args['filter'] else {}
 
         individual_filters = {
-            'project': args.filter_project,
-            'type': args.filter_type,
-            'tags': args.filter_tags,
-            'context': args.filter_context,
-            'status': args.filter_status,
-            'priority': args.filter_priority,
-            'author': args.filter_author,
-            'assigned_to': args.filter_assigned_to,
-            'target_version': args.filter_target_version
+            'project': args['filter_project'],
+            'type': args['filter_type'],
+            'tags': args['filter_tags'],
+            'context': args['filter_context'],
+            'status': args['filter_status'],
+            'priority': args['filter_priority'],
+            'author': args['filter_author'],
+            'assigned_to': args['filter_assigned_to'],
+            'target_version': args['filter_target_version']
         }
 
         for key, value in individual_filters.items():

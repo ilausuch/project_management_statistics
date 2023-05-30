@@ -25,7 +25,7 @@ def test_filter_parser():
         }
     '''])
 
-    filters = filter_parser.get_filters(args)
+    filters = filter_parser.get_filters(vars(args))
     assert filters == {
         'project': {'op': 'eq', 'value': 'Project B'},
         'priority': {'op': 'eq', 'value': 'High'},

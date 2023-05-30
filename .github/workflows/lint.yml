@@ -19,7 +19,7 @@ jobs:
         pip install -r requirements_test.txt
     - name: Analysing the code with pylint
       run: |
-        PYTHONPATH=. pylint ./db/ ./metrics/ ./formatters/ ./redmine/
+        PYTHONPATH=. pylint ./db/ ./metrics/ ./formatters/ ./redmine/ ./utils/
         PYTHONPATH=. pylint ./tests/
         PYTHONPATH=. pylint ./*.py
   flake8-lint:
