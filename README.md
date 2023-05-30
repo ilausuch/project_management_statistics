@@ -269,8 +269,8 @@ python <script>.py --filter '{
 
 ```
 
-This filter will return items that belong to "Project A", have a tag containing "tag1" (case-insensitive), h
-ave a status of either "New" or "In Progress", and have a start date greater than "2022-01-01".
+This filter will return items that belong to "Project A", have a tag containing "tag1" (case-insensitive), 
+have a status of either "New" or "In Progress", and have a start date greater than "2022-01-01".
 
 Note: eq is optional, so you can use "status": `{{"op": "eq", "value": "New"}}` or `{"status": "New"}`.
 
@@ -290,6 +290,40 @@ Option 2: using the operation `{"op": "is_null"}`
   "project": {"op": "is_null"},
 }
 ```
+
+##### Yaml configuration
+
+You can manage the configurations for the scripts more effectively using a YAML configuration file.
+The YAML file allows you to define parameters such as --start_date and --output_format in a structured
+and easy-to-understand manner.
+
+You can load the configuration settings from the YAML file using the --config argument followed by the
+path to your YAML file.
+
+For example:
+
+```bash
+python your_script.py --config /path/to/your/config.yaml
+```
+
+Your YAML configuration file might look something like this:
+
+```yaml
+start_date: "2023-01-01"
+output_format: "json"
+```
+
+Please note that if you pass an argument through the command line, this will take precedence over the values
+defined in the YAML configuration file.
+
+For instance, if you run:
+
+```bash
+python your_script.py --config /path/to/your/config.yaml --start_date "2023-02-01"
+```
+
+The start_date will be set to "2023-02-01", even though the configuration file specifies a different value.
+This allows for convenient overriding of specific settings without having to modify the YAML file.
 
 #### metrics_by_period
 
