@@ -201,7 +201,7 @@ tags
 
 # Others
 deprecated
-redmine/config.py
+trackers/redmine/config.py
 bsc/config.py
 *.sql
 *.sql-journal
