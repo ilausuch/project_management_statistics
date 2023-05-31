@@ -4,7 +4,7 @@ import logging
 import logging.config
 import yaml
 
-from redmine.redmine_dumper import RedmineDumper
+from trackers.redmine.redmine_dumper import RedmineDumper
 
 
 def main():

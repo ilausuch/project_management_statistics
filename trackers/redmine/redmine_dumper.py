@@ -2,8 +2,8 @@ import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db.models import Base, Issue, IssueEvent, IssueRelation
-from redmine.redmine_connector import RedmineConnector
-from redmine import config
+from trackers.redmine.redmine_connector import RedmineConnector
+from trackers.redmine import config
 
 
 REDMINE_DATE_FORMAT = '%Y-%m-%d'

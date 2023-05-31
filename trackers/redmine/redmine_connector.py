@@ -3,7 +3,7 @@ import sys
 import logging
 import requests
 from ratelimiter import RateLimiter
-from redmine import config
+from trackers.redmine import config
 
 
 class RedmineConnector:

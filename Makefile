@@ -7,7 +7,7 @@ all: prepare test
 .PHONY: prepare
 prepare:
 	pip install -r requirements_test.txt
-	cp ./redmine/config_example.py ./redmine/config.py
+	cp ./trackers/redmine/config_example.py ./trackers/redmine/config.py
 
 .PHONY: test
 test:
@@ -25,23 +25,23 @@ podman-container-test:
 
 # Devel tools
 podman-flake8:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py  pms_test "flake8 --max-line-length 130 *.py db/ redmine/ metrics/ tests/ formatters/ utils/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py  pms_test "flake8 --max-line-length 130 *.py db/ trackers/ metrics/ tests/ formatters/ utils/"
 podman-pylint:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint *.py metrics/ db/ redmine/ formatters/ tests/ utils/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint *.py metrics/ db/ trackers/ formatters/ tests/ utils/"
 podman-pylint-metrics:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint metrics/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint metrics/"
 podman-pylint-db:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint db/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint db/"
 podman-pylint-redmine:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint redmin/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint trackers/"
 podman-pylint-formatters:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint formatters/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint formatters/"
 podman-pylint-tests:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint tests/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackes/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint tests/"
 podman-pylint-utils:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint utils/"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pylint utils/"
 podman-test:
-	podman run --rm -v `pwd`:/pms -v `pwd`/redmine/config_example.py:/pms/redmine/config.py pms_test "PYTHONPATH=. python3 -m pytest"
+	podman run --rm -v `pwd`:/pms -v `pwd`/trackers/redmine/config_example.py:/pms/trackers/redmine/config.py pms_test "PYTHONPATH=. python3 -m pytest"
 podman-check:
 	make podman-container-test
 	make podman-flake8
