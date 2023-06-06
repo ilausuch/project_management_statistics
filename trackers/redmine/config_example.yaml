@@ -1,0 +1,13 @@
+REDMINE:
+  url: https://....
+  key: 
+  query_ratio: 100
+STATUS_CODE_TO_STRING:
+  '1': 'NEW'
+  '2': 'IN PROGRESS'
+  '3': 'RESOLVED'
+  '4': 'FEEDBACK'
+  '5': 'CLOSED'
+  '6': 'REJECTED'
+  '12': 'WORKABLE'
+  '15': 'BLOCKED'

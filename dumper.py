@@ -3,7 +3,7 @@ import argparse
 import logging
 import logging.config
 import yaml
-
+from trackers.redmine.redmine_config import RedmineConfig
 from trackers.redmine.redmine_dumper import RedmineDumper
 
 
@@ -14,10 +14,11 @@ def main():
                         help='increase output verbosity')
     subparsers = parser.add_subparsers(dest='source', required=True)
     redmine_parser = subparsers.add_parser('redmine', help='redmine help')
-    redmine_parser.add_argument('--project', help="Project name")
+    redmine_parser.add_argument('--project', help="Project name", required=True)
     redmine_parser.add_argument('--database',
                                 help="SQLite file path",
                                 required=True)
+    redmine_parser.add_argument('--config', help="Configuration file path", default='redmine.yaml')
 
     bugzilla_parser = subparsers.add_parser('bugzilla', help='bugzilla help')
     bugzilla_parser.add_argument('-P', '--prod', metavar='string', type=str,
@@ -67,6 +68,7 @@ def main():
         logger.setLevel(logging.DEBUG)
 
     if args.source == "redmine":
+        RedmineConfig.get_instance().load(args.config)
         if args.project is None:
             raise TypeError("dumper.py: error: the following arguments are \
             required: --project when source is redmine")

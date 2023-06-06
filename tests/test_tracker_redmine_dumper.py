@@ -1,5 +1,6 @@
 from datetime import datetime
 from trackers.redmine.redmine_dumper import RedmineDumper, RedmineIssue, RedmineIssueEvent
+from trackers.redmine.redmine_config import RedmineConfig
 
 
 # pylint: disable=super-init-not-called
@@ -9,18 +10,20 @@ class FakeDumper(RedmineDumper):
         pass
 
 
-def get_status_string(status_code):
-    codes = {
-        '1': 'NEW',
-        '2': 'IN PROGRESS',
-        '3': 'RESOLVED',
-        '4': 'FEEDBACK',
-        '5': 'CLOSED',
-        '6': 'REJECTED',
-        '12': 'WORKABLE',
-        '15': 'BLOCKED'
+# pylint: disable=unused-argument
+def redmine_config_load(self, config_file):
+    self.data = {
+        'STATUS_CODE_TO_STRING': {
+            '1': 'NEW',
+            '2': 'IN PROGRESS',
+            '3': 'RESOLVED',
+            '4': 'FEEDBACK',
+            '5': 'CLOSED',
+            '6': 'REJECTED',
+            '12': 'WORKABLE',
+            '15': 'BLOCKED'
+        }
     }
-    return codes.get(str(status_code), "UNKNOWN")
 
 
 def test_issues(monkeypatch):
@@ -32,7 +35,8 @@ def test_issues(monkeypatch):
 
 
 def test_redmine_issue(monkeypatch):
-    monkeypatch.setattr("trackers.redmine.redmine_dumper.get_status_string", get_status_string)
+    monkeypatch.setattr(RedmineConfig, "load", redmine_config_load)
+    RedmineConfig.get_instance().load("")
 
     a_datetime = "2023-03-14T16:19:48Z"
     a_date = "2023-03-14"
@@ -112,7 +116,8 @@ def test_redmine_issue(monkeypatch):
 
 
 def test_redmine_issue_event(monkeypatch):
-    monkeypatch.setattr("trackers.redmine.redmine_dumper.get_status_string", get_status_string)
+    monkeypatch.setattr(RedmineConfig, "load", redmine_config_load)
+    RedmineConfig.get_instance().load("")
 
     issue_id = 1234
     data = {

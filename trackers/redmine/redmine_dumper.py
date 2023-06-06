@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db.models import Base, Issue, IssueEvent, IssueRelation
 from trackers.redmine.redmine_connector import RedmineConnector
-from trackers.redmine import config
+from trackers.redmine.redmine_config import RedmineConfig
 
 
 REDMINE_DATE_FORMAT = '%Y-%m-%d'
@@ -15,12 +15,9 @@ REDMINE_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 # pylint: disable=super-init-not-called
 
 
-def get_status_string(status_code):
-    return config.STATUS_CODE_TO_STRING.get(status_code, "UNKNOWN")
-
-
 class RedmineIssue(Issue):
     def __init__(self, issue_dict):
+        config = RedmineConfig.get_instance()
         if 'id' in issue_dict:
             self.issue_id = issue_dict['id']
         if 'project' in issue_dict:
@@ -28,7 +25,7 @@ class RedmineIssue(Issue):
         if 'tracker' in issue_dict:
             self.type = issue_dict['tracker']['name']
         if 'status' in issue_dict:
-            self.status = get_status_string(issue_dict['status']['id'])
+            self.status = config.get_status_string(issue_dict['status']['id'])
         if 'priority' in issue_dict:
             self.priority = issue_dict['priority']['name']
         if 'author' in issue_dict:
@@ -57,6 +54,7 @@ class RedmineIssue(Issue):
 
 class RedmineIssueEvent(IssueEvent):
     def __init__(self, journal_dict, change_dict, issue_id):
+        config = RedmineConfig.get_instance()
         self.issue_id = issue_id
         if 'user' in journal_dict:
             self.user_name = journal_dict['user']['name']
@@ -68,8 +66,8 @@ class RedmineIssueEvent(IssueEvent):
 
             if change_dict["name"] == 'status_id':
                 self.field = "status"
-                self.old_value = get_status_string(change_dict['old_value'])
-                self.new_value = get_status_string(change_dict['new_value'])
+                self.old_value = config.get_status_string(change_dict['old_value'])
+                self.new_value = config.get_status_string(change_dict['new_value'])
             else:
                 self.field = change_dict['name']
                 self.old_value = change_dict['old_value']

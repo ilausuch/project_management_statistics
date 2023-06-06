@@ -175,27 +175,45 @@ The current database system is SQLite, which is native to Python and easily port
 
 ### Dumping progress issues into local DB for further processing (Redmine)
 
-In this section, we'll focus on setting up the environment to dump Progress issues into a local database for further processing. Follow these steps to get started:
+To set up the environment for dumping Progress issues into a local database for further processing, follow these steps:
 
-Create a Redmine configuration file as a Python file, for example, config.py.
-Define the following variables in this file:
-- **REDMINE_UR**: The URL to target Redmine instance from where tickets will be dumped.
-- **REDMINE_KEY**: The API key that allows access to the REDMINE_URL.
-- **REDMINE_QUERY_RATIO**: The maximum number of requests per minute to the Redmine API.
+1. Create a file named redmine_config.yaml at the root of your project. Use the following structure for the file:
 
-Execute the following command, replacing <your_redmine_config_path>, <project_name>, and <sqlite_file> with appropriate values
+```yaml
+REDMINE:
+  url: <REDMINE_URL>  # The URL to target the Redmine instance from where tickets will be dumped.
+  key: <REDMINE_API_KEY>  # The API key that allows access to the REDMINE_URL.
+  query_ratio: <MAX_REQUESTS_PER_MIN>  # The maximum number of requests per minute to the Redmine API.
 
-```bash
-podman run  -ti --rm -v <your_redmine_config_path>:/pms/redmine/config.py pms "./dumper.py \
-       redmine --project <project_name> --database <sqlite_file> "
+STATUS_CODE_TO_STRING:
+  '1': 'NEW'
+  '2': 'IN PROGRESS'
+  '3': 'RESOLVED'
+  '4': 'FEEDBACK'
+  '5': 'CLOSED'
+  '6': 'REJECTED'
+  '12': 'WORKABLE'
+  '15': 'BLOCKED'
 ```
 
-Once you've completed the steps, you will obtain an SQLite file containing the dumped database with all the relevant Progress issues. If the database already exists, 
-the dumper script will intelligently update it with the latest information from Redmine, ensuring that your local database remains up-to-date for further processing and analysis.
+Replace <REDMINE_URL> with the URL of your Redmine instance, <REDMINE_API_KEY> with your API key,
+and <MAX_REQUESTS_PER_MIN> with the maximum number of requests per minute allowed by Redmine API.
 
-Consider reusing the previous dumped DB file as this script is designed to update the existing database in a way that minimizes API calls. By optimizing the update process,
-the script reduces the load on the Redmine API and helps prevent reaching any imposed rate limits, ensuring smooth and efficient data synchronization.
+2. Execute the following command, replacing <project_name> and <sqlite_file> with appropriate values:
 
+```bash
+podman run -ti --rm -v $(pwd)/redmine_config.yaml:/pms/redmine_config.yaml pms "./dumper.py \
+  redmine --project <project_name> --database <sqlite_file>"
+```
+    
+This command runs the dumper.py script, which will dump the Progress issues from Redmine into the specified SQLite file. Ensure that you have the pms container available.
+
+Once you have completed these steps, you will obtain an SQLite file containing the dumped database with all the relevant Progress issues.
+If the database already exists, the dumper script will update it with the latest information from Redmine,
+ensuring that your local database remains up-to-date for further processing and analysis.
+
+It is recommended to reuse the previously dumped DB file, as the script is designed to update the existing database efficiently,minimizing API calls.
+By optimizing the update process, the script reduces the load on the Redmine API and helps prevent reaching any imposed rate limits, preventing IP abbuse blocker systems.
 
 ### Generating metrics
 

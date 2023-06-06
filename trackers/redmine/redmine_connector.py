@@ -3,11 +3,12 @@ import sys
 import logging
 import requests
 from ratelimiter import RateLimiter
-from trackers.redmine import config
+from trackers.redmine.redmine_config import RedmineConfig
 
 
 class RedmineConnector:
     def __init__(self, logging_level: int):
+        self.config = RedmineConfig.get_instance()
         self.logger = logging.getLogger(self.__module__)
         self.logger.setLevel(logging_level)
         handler = logging.StreamHandler(sys.stdout)
@@ -16,11 +17,11 @@ class RedmineConnector:
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-        self.logger.info("Init connection to %s", config.REDMINE_URL)
-        self.rate_limiter = RateLimiter(max_calls=config.REDMINE_QUERY_RATIO, period=60)
+        self.logger.info("Init connection to %s", self.config.get_redmine_url())
+        self.rate_limiter = RateLimiter(max_calls=self.config.get_redmine_query_ratio(), period=60)
 
     def raw_query(self, url_ending: str, filters: Dict[str, list] = {}) -> Any:
-        query = f"{config.REDMINE_URL}{url_ending}?utf8=✓"
+        query = f"{self.config.get_redmine_url()}{url_ending}?utf8=✓"
         if len(filters) > 0:
             query = f"{query}&set_filter=1"
             for filter_key in filters:
@@ -30,7 +31,7 @@ class RedmineConnector:
         self.logger.debug("Resulting request %s. Waiting for rate_limiter...", query)
         with self.rate_limiter:
             response = requests.get(query, headers={
-                'X-Redmine-API-Key': config.REDMINE_KEY}, timeout=60)
+                'X-Redmine-API-Key': self.config.get_redmine_key()}, timeout=60)
             response.raise_for_status()
             response_json = response.json()
             return response_json
