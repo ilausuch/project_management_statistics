@@ -15,7 +15,6 @@ class FilterParser:
         parser.add_argument('--filter', type=str, help='Filter by JSON string')
 
     def _parse_filters(self, args):
-        print(args)
         filters = json.loads(args['filter']) if args['filter'] else {}
 
         individual_filters = {
