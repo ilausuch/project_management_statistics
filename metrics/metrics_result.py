@@ -14,6 +14,14 @@ class MetricsResults:
     def as_array(self):
         return [{**self.data, "date": self.date}]
 
+    def as_dataframe(self):
+        return pd.DataFrame(self.data)
+
+    @classmethod
+    def from_dataframe(cls, dataframe: pd.DataFrame):
+        data = dataframe.to_dict(orient='records')
+        return cls(data)
+
 
 class MetricsTimeSeries:
     def __init__(self, data=None, metadata=None):
