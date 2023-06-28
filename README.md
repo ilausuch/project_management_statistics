@@ -309,6 +309,42 @@ Option 2: using the operation `{"op": "is_null"}`
 }
 ```
 
+##### Column configuration
+
+The scripts allow for transformations on the data columns
+The transformations can be specified through the --column command line argument.
+
+Each column transformation is represented as a string of the form
+```<column_name>.<operation>(<arg1>, <arg2>, ...).```
+Here, <column_name> is the name of the column to be transformed or created,
+<operation> is the operation to be applied, and <arg1>, <arg2>, ... are the
+arguments to the operation, if any.
+
+The available operations are:
+
+- **hide()**: Removes the specified column from the data.
+- **sum(<col1>, <col2>, ...)**: Creates a new column that is the sum of the specified columns.
+- **avg(<col1>, <col2>, ...)**: Creates a new column that is the average of the specified columns.
+- **mult(<col1>, <col2>)**: Creates a new column that is the product of the specified columns.
+- **div(<col1>, <col2>)**: Creates a new column that is the division of the specified columns.
+- **incr(<col1>)**: Creates a new column that represents the increment of the specified column.
+- **diff(<col1>)**: Creates a new column that represents the difference between the current and previous value of the specified column.
+
+Examples:
+
+Hide the "UNKNOWN" column and create a new "ACTIVE" column which is the sum of "IN PROGRESS", "WORKABLE", and "NEW":
+
+```bash
+python3 metrics_snapshot.py database --column "UNKNOWN.hide()" --column "ACTIVE.sum(IN PROGRESS, WORKABLE, NEW)"
+```
+
+Compute the difference of "RESOLVED" and assign it to a new column named "SPEED":
+
+```bash
+python3 metrics_by_period.py database --start_date 2023-05-01 --end_date 2023-05-30 --column "SPEED.diff(RESOLVED)"
+```
+
+
 ##### Yaml configuration
 
 You can manage the configurations for the scripts more effectively using a YAML configuration file.

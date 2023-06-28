@@ -6,7 +6,6 @@ def parse_date(value, default_value):
         return default_value
 
     if isinstance(value, datetime):
-        print("**")
         return value.date()
 
     if isinstance(value, date):
