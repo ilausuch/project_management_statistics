@@ -10,9 +10,9 @@ handlers:
     class: logging.StreamHandler
     level: DEBUG
     formatter : console
-  bsc_fl:
+  bugzilla_fl:
     class: logging.FileHandler
-    filename: '/tmp/bsc_metric.log'
+    filename: '/tmp/bugzilla_metric.log'
     level: DEBUG
     formatter: default
 loggers:
@@ -20,13 +20,9 @@ loggers:
     level: INFO
     handlers: [console]
     propagate: False
-  bsc:
+  trackers:
     level: INFO
-    handlers: [console, bsc_fl]
-    propagate: False
-  redmine:
-    level: INFO
-    handlers: [console]
+    handlers: [console, bugzilla_fl]
     propagate: False
 root:
   level: INFO

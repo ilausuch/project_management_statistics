@@ -9,6 +9,7 @@ disable=
  E0611, # No name 'config' in module 'redmine' (no-name-in-module)
  R0912, # Too many branches (14/12) (too-many-branches)
  R1702, # Too many nested blocks (6/5) (too-many-nested-blocks)
+ fixme,
 
 recursive = true
 fail-under=9.9
@@ -31,3 +32,4 @@ persistent = true
 reports = false
 score = true
 suggestion-mode = true
+good-names = i, j, k, bz
