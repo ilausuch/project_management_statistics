@@ -689,3 +689,8 @@ If no --table argument is provided, the script lists all the table names in the 
 If a --table argument is provided but no --field argument is provided, the script lists all the column names in the specified table.
 
 If both --table and --field arguments are provided, the script lists all the distinct values in the specified field of the specified table.
+
+
+## Demos
+
+[Complete demo with grafana, influxdb and telegraf](docs/demo/README.md)

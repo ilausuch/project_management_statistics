@@ -208,3 +208,8 @@ bsc/config.py
 notes.txt
 workdir/
 redmine.yaml
+
+#docs
+docs/demo/data
+docs/demo/database.db
+docs/demo/telegraf.conf
