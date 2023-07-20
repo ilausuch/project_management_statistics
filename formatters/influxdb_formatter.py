@@ -33,7 +33,7 @@ class MetricsInfluxdbFormatter:
                 f"{str(key).replace(' ', '_')}={str(value).replace(' ', '_')}"
                 for key, value in entry_values.items()
             ])
-            lines.append(f"{measurement_name} {filter_str} {values_str} {entry['date'].strftime('%Y-%m-%dT%H:%M:%S.%fZ')}")
+            lines.append(f"{measurement_name},{filter_str} {values_str} {int(entry['date'].timestamp() * 1e9)}")
         return lines
 
     @staticmethod
