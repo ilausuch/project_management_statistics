@@ -4,6 +4,11 @@
 By utilizing a normalized model for Issue, IssueEvent, and IssueAttribute, we can combine different sources into the same metrics.
 This is particularly useful for teams working with different ticket systems and management perspectives. Or for managers to have an overview of the department
 
+- [Issue](#issue)
+- [IssueEvent](#issueevent)
+- [IssueRelation](#issuerelation)
+- [IssueAttribute](#issueattribute)
+
 ## Issue
 
 The Issue model contains the common fields expected from a ticket system and provides the last status (and snapshot) of the ticket. These fields include:

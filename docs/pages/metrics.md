@@ -1,6 +1,12 @@
 
 # Develop a metrics system
 
+- [Requirements](#requirements)
+- [Methods](#methods)
+- [Metrics results](#metrics-results)
+  - [MetricsResults](#metricsresults)
+  - [MetricsTimeSeries](#metricstimeseries)
+
 ## requeriments
 
 Import Metrics and SQLiteQuery if is necessary

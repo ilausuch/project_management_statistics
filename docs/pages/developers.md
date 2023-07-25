@@ -1,5 +1,15 @@
 # Project Management Statistics for Developers
 
+## Index
+- [Development in situ](#development-in-situ)
+- [Development in a container](#development-in-a-container)
+- [Code organization](#code-organization)
+- [Specific documentation](#specific-documentation)
+    - [Normalized model](models.md)
+    - [Develop a tracker](trackers.md)
+    - [Develop a metrics algorithm](metrics.md)
+    - [Develop a formatter](formatters.md)
+
 ## Development in situ
 
 ### Prepare the venv

@@ -1,6 +1,21 @@
 
 # Project Management Statistics for Users
 
+## Index
+
+- [Dumping Progress issues into local DB for further processing (Redmine)](#dumping-progress-issues-into-local-db-for-further-processing-redmine)
+- [Generating metrics](#generating-metrics)
+  - [scripts](#scripts)
+    - [metrics_by_period](#metrics_by_period)
+    - [metrics_snapshot](#metrics_snapshot)
+  - [Filter Arguments](#filter-arguments)
+  - [Complex Filters](#complex-filters)
+  - [Column configuration](#column-configuration)
+  - [Metrics configuration YAML](#metrics-configuration-yaml)
+- [Other tools](#other-tools)
+  - [Redmine: get issue full information](#redmine-get-issue-full-information)
+  - [SQLite3 Database discover](#sqlite3-database-discover)
+
 ## Dumping progress issues into local DB for further processing (Redmine)
 
 To set up the environment for dumping Progress issues into a local database for further processing, follow these steps:
@@ -46,7 +61,9 @@ By optimizing the update process, the script reduces the load on the Redmine API
 
 ## Generating metrics
 
-### metrics_by_period
+## Scripts
+
+#### metrics_by_period
 
 metrics_by_period.py allows users to extract metrics for a specified period or the entire dataset. 
 The script supports the status_count metric and can output the results in various formats.
@@ -80,7 +97,7 @@ python metrics_by_period.py --start_date 2022-03-01 --end_date 2023-03-30 \
    --measurement_name my_measurement my_database.db
 ```
 
-### metrics_snapshot
+#### metrics_snapshot
 
 metrics_snapshot.py is a script that applies a metric method to a specified date or to the epoch, and outputs the result in the desired format.
 The script currently supports the status_count metric and can output the result in JSON, InfluxDB, or CSV format.
@@ -275,7 +292,7 @@ The start_date will be set to "2023-02-01", even though the configuration file s
 This allows for convenient overriding of specific settings without having to modify the YAML file.
 
 
-## Other scripts
+## Other tools
 
 ### Redmine: get issue full information
 
@@ -292,8 +309,6 @@ The script will output the full information of the specified issue in JSON forma
 Arguments:
 
 - **issue_id (required)**: the ID of the Redmine issue to retrieve.
-
-## Other tools
 
 ### SQLite3 Database discover
 
