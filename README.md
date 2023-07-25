@@ -23,6 +23,20 @@ rather than having changes apply only from the moment of implementation.
 - **Resilience during downtime**: If a monitoring tool like Telegraf goes offline, historical data ensures that you won't miss any metrics generated during the downtime.
 - **Advanced complexity and trend analysis**: Access to historical data enables the creation of complex metrics based on trends and issue evolution over time, offering deeper insights.
 
+# Content of the documentation
+
+Introduction
+- [Features](#features)
+- [Workflow](#workflow)
+- [Why a normalized model](#why-a-normalized-model)
+
+Specific documentation
+  - [For users](docs/pages/users.md)
+  - [For developers](docs/pages/developers.md)
+
+Demos
+  - [Demo and how to with grafana, influxdb and telegraf](docs/demo/README.md)
+
 ## Features
 
 ### Redmine Data dumping
@@ -87,7 +101,8 @@ with other applications that can read and process JSON data.
 
 By following this workflow, we ensure a smooth and efficient process for handling, analyzing, and generating valuable information from raw data across multiple ticket systems.
 
-### Normalized model
+
+### Why a normalized model
 
 Using a database with a normalized model offers several benefits over directly connecting to APIs:
 
@@ -109,14 +124,3 @@ This consistent format is beneficial not only for product owners and scrum maste
 but also for managers who need to maintain an overview of multiple projects across the department.
 By having a unified data format, managers can efficiently track progress, evaluate performance, and make data-driven decisions across all projects,
 ensuring better alignment with organizational goals and objectives.
-
-
-## Extended documentation
-
-- [For users](docs/pages/users.md)
-- [For developers](docs/pages/developers.md)
-
-
-## Demos
-
-[Complete demo with grafana, influxdb and telegraf](docs/demo/README.md)
