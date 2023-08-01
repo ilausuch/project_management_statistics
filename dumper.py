@@ -5,7 +5,7 @@ import logging.config
 import yaml
 from trackers.redmine.redmine_config import RedmineConfig
 from trackers.redmine.redmine_dumper import RedmineDumper
-from trackers.bugzilla.bugzilla_suse import bzmain, bzlist_queries
+# from trackers.bugzilla.bugzilla_suse import bzmain, bzlist_queries
 
 
 def main():
@@ -78,18 +78,18 @@ def main():
                     args.source, args.project, args.database)
         dumper = RedmineDumper(args.database, logger.level)
         dumper.dump_to_db(args.project)
-    elif args.source == "bugzilla":
-        if args.listqueries:
-            bzlist_queries()
-        else:
-            params = {'product': args.prod,
-                      'status': args.status,
-                      'severity': args.severity,
-                      'priority': args.priority,
-                      'range': args.range}
-            for script in args.exec:
-                logger.info("%s is passed to run", script)
-            bzmain(args.exec, params)
+    # elif args.source == "bugzilla":
+    #     if args.listqueries:
+    #         bzlist_queries()
+    #     else:
+    #         params = {'product': args.prod,
+    #                   'status': args.status,
+    #                   'severity': args.severity,
+    #                   'priority': args.priority,
+    #                   'range': args.range}
+    #         for script in args.exec:
+    #             logger.info("%s is passed to run", script)
+    #         bzmain(args.exec, params)
     else:
         raise NotImplementedError(f"'--source {args.source}' not supported")
 
