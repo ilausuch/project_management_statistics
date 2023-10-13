@@ -1,5 +1,8 @@
 # Project Management Statistics
 
+This project continues on [here](https://github.com/Jan-Stehlik-SUSE/project_management_statistics)
+There won't be more updates in this fork
+
 Taking a comprehensive approach, it's important to recognize that ticket systems such as Issues and IssueEvents usually only store raw data.
 Through the processing and analysis facilitated by this project, we transform this data into valuable information 
 that can be used for in-depth analysis or making informed decisions.
