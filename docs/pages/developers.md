@@ -22,9 +22,9 @@ pip3 install -r requirements_test.txt
 
 ### Testing with redmine
 
-If you have already a redmine/config.py skip this step
+If you have already a trackers/redmine/config.py skip this step
 ```bash
-cp ./redmine/config_example.py ./redmine/config.py
+cp ./trackers/redmine/config_example.py ./trackes/redmine/config.py
 ```
 
 Run the tests with

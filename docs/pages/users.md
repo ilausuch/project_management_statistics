@@ -20,7 +20,7 @@
 
 To set up the environment for dumping Progress issues into a local database for further processing, follow these steps:
 
-1. Create a file named redmine_config.yaml at the root of your project. Use the following structure for the file:
+1. Create a file named redmine.yaml at the root of your project. Use the following structure for the file:
 
 ```yaml
 REDMINE:
@@ -42,14 +42,22 @@ STATUS_CODE_TO_STRING:
 Replace <REDMINE_URL> with the URL of your Redmine instance, <REDMINE_API_KEY> with your API key,
 and <MAX_REQUESTS_PER_MIN> with the maximum number of requests per minute allowed by Redmine API.
 
-2. Execute the following command, replacing <project_name> and <sqlite_file> with appropriate values:
+Now create the container
 
 ```bash
-podman run -ti --rm -v $(pwd)/redmine_config.yaml:/pms/redmine_config.yaml pms "./dumper.py \
-  redmine --project <project_name> --database <sqlite_file>"
+sudo podman -t pms .
+```
+
+2. Execute the following command, replacing <project_name> and <sqlite_file> with appropriate values:
+
+`podman run -ti --rm pms "./dumper.py redmine --project <project_name> --database <sqlite_file>"`
+
+for example
+```bash
+podman run -ti --rm pms "./dumper.py redmine --project containers --database containers.db"
 ```
     
-This command runs the dumper.py script, which will dump the Progress issues from Redmine into the specified SQLite file. Ensure that you have the pms container available.
+This command runs the dumper.py script, which will dump the Progress issues from Redmine into the specified SQLite file.
 
 Once you have completed these steps, you will obtain an SQLite file containing the dumped database with all the relevant Progress issues.
 If the database already exists, the dumper script will update it with the latest information from Redmine,
